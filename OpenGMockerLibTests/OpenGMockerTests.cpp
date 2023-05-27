@@ -45,3 +45,27 @@ TEST_F(OpenGMockerTests, MockFunctionThrowsTryingToMockANonVirtualFunction)
 
     EXPECT_THROW(mocker.MockFunction(Function), std::exception);
 }
+
+TEST_F(OpenGMockerTests, GenerateMockFromFunctionPrimitiveReturnPrimitiveParams)
+{
+    constexpr auto Function = "virtual int TestFunction(int first, double second, float third) = 0;";
+    constexpr auto ExpectedMock = "MOCK_METHOD(int, TestFunction, (int first, double second, float third), (override));";
+    OpenGMocker mocker;
+
+    std::string actualMock;
+    EXPECT_NO_THROW(actualMock = mocker.MockFunction(Function));
+
+    EXPECT_EQ(ExpectedMock, actualMock);
+}
+
+TEST_F(OpenGMockerTests, GenerateMockFromFunctionNoReturnComplexParams)
+{
+    constexpr auto Function = "virtual void TestFunction(std::pair<int, int> coords, const std::vector<std::string> &values) = 0;";
+    constexpr auto ExpectedMock = "MOCK_METHOD(void, TestFunction, (std::pair<int, int> coords, const std::vector<std::string> &values), (override));";
+    OpenGMocker mocker;
+
+    std::string actualMock;
+    EXPECT_NO_THROW(actualMock = mocker.MockFunction(Function));
+
+    EXPECT_EQ(ExpectedMock, actualMock);
+}

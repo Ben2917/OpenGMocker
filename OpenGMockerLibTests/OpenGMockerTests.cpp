@@ -37,3 +37,11 @@ TEST_F(OpenGMockerTests, GenerateMockFromFunctionPrimitiveReturnNoParamsConstQua
 
     EXPECT_EQ(ExpectedMock, actualMock);
 }
+
+TEST_F(OpenGMockerTests, MockFunctionThrowsTryingToMockANonVirtualFunction)
+{
+    constexpr auto Function = "int TestFunction() = 0;";
+    OpenGMocker mocker;
+
+    EXPECT_THROW(mocker.MockFunction(Function), std::exception);
+}

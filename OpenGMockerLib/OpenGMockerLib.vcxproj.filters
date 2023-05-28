@@ -2,9 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="functionmocker.cpp" />
+    <ClCompile Include="classmocker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="functionmocker.h" />
     <ClInclude Include="ifunctionmocker.h" />
+    <ClInclude Include="classmocker.h" />
+    <ClInclude Include="iclassmocker.h" />
   </ItemGroup>
 </Project>

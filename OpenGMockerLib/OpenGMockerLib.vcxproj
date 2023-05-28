@@ -143,9 +143,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="classmocker.cpp" />
     <ClCompile Include="functionmocker.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="classmocker.h" />
+    <ClInclude Include="iclassmocker.h" />
     <ClInclude Include="ifunctionmocker.h" />
     <ClInclude Include="functionmocker.h" />
   </ItemGroup>

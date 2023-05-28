@@ -8,7 +8,7 @@ namespace OpenGMocker
 
     class FunctionMockerTests : public ::testing::Test
     {
-    public:
+    protected:
         FunctionMockerTests() = default;
     };
 

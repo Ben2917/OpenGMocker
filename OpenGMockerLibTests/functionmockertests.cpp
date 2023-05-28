@@ -73,4 +73,16 @@ namespace OpenGMocker
         EXPECT_EQ(ExpectedMock, actualMock);
     }
 
+    TEST_F(FunctionMockerTests, GenerateMockFromFunctionComplexReturnNoParams)
+    {
+        constexpr auto Function = "virtual std::vector<std::string> TestFunction() = 0;";
+        constexpr auto ExpectedMock = "MOCK_METHOD(std::vector<std::string>, TestFunction, (), (override));";
+        FunctionMocker mocker;
+
+        std::string actualMock;
+        EXPECT_NO_THROW(actualMock = mocker.MockFunction(Function));
+
+        EXPECT_EQ(ExpectedMock, actualMock);
+    }
+
 }

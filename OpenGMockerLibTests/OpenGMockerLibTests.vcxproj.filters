@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Mock Generation Tests">
+      <UniqueIdentifier>{bd41bcb9-932d-4821-9c5e-b11e6b6cbae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="File Generation Tests">
+      <UniqueIdentifier>{7b4d843e-aedc-49ff-b836-da412ea47a77}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="functionmockertests.cpp">
+      <Filter>Mock Generation Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="filemockertests.cpp">
+      <Filter>Mock Generation Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="classmockertests.cpp">
+      <Filter>Mock Generation Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="mockfilegeneratortests.cpp">
+      <Filter>File Generation Tests</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

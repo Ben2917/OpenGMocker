@@ -143,11 +143,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="OpenGMocker.cpp" />
+    <ClCompile Include="functionmocker.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="IOpenGMocker.h" />
-    <ClInclude Include="OpenGMocker.h" />
+    <ClInclude Include="ifunctionmocker.h" />
+    <ClInclude Include="functionmocker.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

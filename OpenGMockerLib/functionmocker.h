@@ -19,16 +19,10 @@ namespace OpenGMocker
         std::string MockFunction(const std::string& function_) override;
 
     private:
-        struct Param
-        {
-            std::string type;
-            std::string name;
-        };
-
         void GetVirtualEnd();
         std::string GetReturnType();
         std::string GetFunctionName();
-        std::vector<Param> GetParams();
+        std::string GetParams();
         bool IsConstQualified() const;
 
         std::string function;

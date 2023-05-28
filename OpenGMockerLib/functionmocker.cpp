@@ -24,7 +24,9 @@ namespace OpenGMocker
             << "MOCK_METHOD("
             << returnType << ", "
             << functionName << ", "
-            << "(), "
+            << "("
+            << parsedParams
+            << "), "
             << (constQualified ? "(const, override)" : "(override)")
             << ");";
 
@@ -59,17 +61,16 @@ namespace OpenGMocker
     {
         const auto openParenthesesPos = function.find_first_of('(');
         const auto functionName = function.substr(0, openParenthesesPos);
-        function = function.substr(openParenthesesPos, function.size() - openParenthesesPos);
+        function = function.substr(openParenthesesPos + 1, function.size() - openParenthesesPos);
         return functionName;
     }
 
-    std::vector<FunctionMocker::Param> FunctionMocker::GetParams()
+    std::string FunctionMocker::GetParams()
     {
         const auto closeParenthesesPos = function.find_first_of(')');
         const auto params = function.substr(0, closeParenthesesPos);
-        std::vector<Param> parsedParams; // TODO: Parse params
         function = function.substr(closeParenthesesPos, function.size() - closeParenthesesPos);
-        return parsedParams;
+        return params;
     }
 
     bool FunctionMocker::IsConstQualified() const

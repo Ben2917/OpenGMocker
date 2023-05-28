@@ -11,6 +11,8 @@ namespace OpenGMocker
     public:
         ClassMocker() = default;
         virtual ~ClassMocker() = default;
+
+        std::string MockClass(const std::string& class_) override;
     };
 }
 #endif // CLASSMOCKER_H

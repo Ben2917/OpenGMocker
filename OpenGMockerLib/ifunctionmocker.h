@@ -2,6 +2,8 @@
 #ifndef IFUNCTIONMOCKER_H
 #define IFUNCTIONMOCKER_H
 
+#include <string>
+
 namespace OpenGMocker
 {
 
@@ -9,6 +11,8 @@ namespace OpenGMocker
     {
     public:
         virtual ~IFunctionMocker() = default;
+
+        virtual std::string MockFunction(const std::string& function) = 0;
 
     };
 

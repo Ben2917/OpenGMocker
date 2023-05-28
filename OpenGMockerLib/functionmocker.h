@@ -16,7 +16,7 @@ namespace OpenGMocker
         FunctionMocker();
         ~FunctionMocker() override;
 
-        std::string MockFunction(const std::string& function_);
+        std::string MockFunction(const std::string& function_) override;
 
     private:
         struct Param

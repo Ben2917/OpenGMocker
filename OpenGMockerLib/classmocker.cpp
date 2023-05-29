@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <sstream>
-#include <vector>
 
 namespace OpenGMocker
 {
@@ -14,35 +13,11 @@ namespace OpenGMocker
 
     std::string ClassMocker::MockClass(const std::string& class_)
     {
-        const auto whitespacePos = class_.find_first_of(' ');
-        const auto openingBracePos = class_.find_first_of('{');
-        std::string name = class_.substr(whitespacePos, openingBracePos - whitespacePos);
-        name.erase(std::remove_if(name.begin(), name.end(), [](char c) { return c == '\n' || c == ' '; }), name.end());
+        classStr = class_;
 
-        const auto closingBracePos = class_.find_first_of('}');
-        std::string pureVirtualFunctions = class_.substr(openingBracePos + 1, closingBracePos - (openingBracePos + 1));
-        pureVirtualFunctions.erase(
-            std::remove_if(
-                pureVirtualFunctions.begin(), 
-                pureVirtualFunctions.end(), 
-                [] (char c) 
-                {
-                    return c == '\n' || c == '\t'; 
-                }), 
-            pureVirtualFunctions.end());
-
-        std::vector<std::string> functions;
-        size_t semicolonPos = 0;
-        while ((semicolonPos = pureVirtualFunctions.find_first_of(';')) != std::string::npos)
-        {
-            semicolonPos += 1; // Inclusive
-            const auto function = pureVirtualFunctions.substr(0, semicolonPos);
-            if (function.find('~') == std::string::npos)
-            {
-                functions.push_back(function);
-            }
-            pureVirtualFunctions = pureVirtualFunctions.substr(semicolonPos, pureVirtualFunctions.size() - semicolonPos);
-        }
+        const auto name = GetInterfaceName();
+        const auto strippedFunctions = GetStrippedFunctions();
+        const auto functions = GetMockableFunctions(strippedFunctions);
 
         std::stringstream mockClassStream;
         mockClassStream
@@ -53,7 +28,58 @@ namespace OpenGMocker
             mockClassStream << "\t" << functionMocker->MockFunction(function) << "\n";
         }
         mockClassStream << "};";
-
         return mockClassStream.str();
+    }
+    
+    std::string ClassMocker::GetInterfaceName()
+    {
+        const auto whitespacePos = classStr.find_first_of(' ');
+        const auto openingBracePos = classStr.find_first_of('{');
+        std::string name = classStr.substr(whitespacePos, openingBracePos - whitespacePos);
+        name.erase(
+            std::remove_if(
+                name.begin(), 
+                name.end(), 
+                [] (char c) 
+                { 
+                    return c == '\n' || c == ' '; 
+                }), 
+            name.end());
+        classStr = classStr.substr(openingBracePos + 1, classStr.size() - (openingBracePos + 1));
+        return name;
+    }
+    
+    std::string ClassMocker::GetStrippedFunctions()
+    {
+        const auto closingBracePos = classStr.find_first_of('}');
+        std::string pureVirtualFunctions = classStr.substr(0, closingBracePos);
+        pureVirtualFunctions.erase(
+            std::remove_if(
+                pureVirtualFunctions.begin(),
+                pureVirtualFunctions.end(),
+                [](char c)
+                {
+                    return c == '\n' || c == '\t';
+                }),
+            pureVirtualFunctions.end());
+
+        return pureVirtualFunctions;
+    }
+
+    std::vector<std::string> ClassMocker::GetMockableFunctions(std::string strippedFunctions)
+    {
+        std::vector<std::string> functions;
+        size_t semicolonPos = 0;
+        while ((semicolonPos = strippedFunctions.find_first_of(';')) != std::string::npos)
+        {
+            semicolonPos += 1; // Inclusive of ';'
+            const auto function = strippedFunctions.substr(0, semicolonPos);
+            if (function.find('~') == std::string::npos)
+            {
+                functions.push_back(function);
+            }
+            strippedFunctions = strippedFunctions.substr(semicolonPos, strippedFunctions.size() - semicolonPos);
+        }
+        return functions;
     }
 }

@@ -35,49 +35,72 @@ namespace OpenGMocker
 
     void FunctionMocker::GetVirtualEnd()
     {
-        auto firstSpacePos = function.find_first_of(' ');
-        const auto virtualIndicator = function.substr(0, firstSpacePos);
-        if (virtualIndicator != "virtual")
+        if (auto firstSpacePos = function.find_first_of(' '); firstSpacePos != std::string::npos)
         {
-            throw FunctionMockerException("Function is not virtual");
+            const auto virtualIndicator = function.substr(0, firstSpacePos);
+            if (virtualIndicator != "virtual")
+            {
+                throw FunctionMockerException("Function is not virtual");
+            }
+            firstSpacePos += 1;
+            function = function.substr(firstSpacePos, function.size() - firstSpacePos);
         }
-        firstSpacePos += 1;
-        function = function.substr(firstSpacePos, function.size() - firstSpacePos);
+        else
+        {
+            throw FunctionMockerException("Could not parse \'virtual\'");
+        }
     }
 
     std::string FunctionMocker::GetReturnType()
     {
-        const auto secondSpacePos = function
+        if (const auto secondSpacePos = function
             .substr(0, function.size())
-            .find_first_of(' ');
-
-        const auto functionNameStart = secondSpacePos + 1;
-        const auto returnType = function.substr(0, secondSpacePos);
-        function = function.substr(functionNameStart, function.size() - functionNameStart);
-        return returnType;
+            .find_first_of(' '); 
+            secondSpacePos != std::string::npos)
+        {
+            const auto functionNameStart = secondSpacePos + 1;
+            const auto returnType = function.substr(0, secondSpacePos);
+            function = function.substr(functionNameStart, function.size() - functionNameStart);
+            return returnType;
+        }
+        else
+        {
+            throw FunctionMockerException("Could not parse return type");
+        }
     }
 
     std::string FunctionMocker::GetFunctionName()
     {
-        const auto openParenthesesPos = function.find_first_of('(');
-        const auto functionName = function.substr(0, openParenthesesPos);
-        function = function.substr(openParenthesesPos + 1, function.size() - openParenthesesPos);
-        return functionName;
+        if (const auto openParenthesesPos = function.find_first_of('('); openParenthesesPos != std::string::npos)
+        {
+            const auto functionName = function.substr(0, openParenthesesPos);
+            function = function.substr(openParenthesesPos + 1, function.size() - openParenthesesPos);
+            return functionName;
+        }
+        else
+        {
+            throw FunctionMockerException("Could not find \'(\' in a given function");
+        }
     }
 
     std::string FunctionMocker::GetParams()
     {
-        const auto closeParenthesesPos = function.find_first_of(')');
-        const auto params = function.substr(0, closeParenthesesPos);
-        function = function.substr(closeParenthesesPos, function.size() - closeParenthesesPos);
-        return params;
+        if (const auto closeParenthesesPos = function.find_first_of(')'); closeParenthesesPos != std::string::npos)
+        {
+            const auto params = function.substr(0, closeParenthesesPos);
+            function = function.substr(closeParenthesesPos, function.size() - closeParenthesesPos);
+            return params;
+        }
+        else
+        {
+            throw FunctionMockerException("Could not find \')\' in a given function");
+        }
     }
 
     bool FunctionMocker::IsConstQualified() const
     {
         const auto qualifiers = function.substr(0, function.size());
-        const auto constQualified = qualifiers.find("const", 0) != std::string::npos;
-        return constQualified;
+        return qualifiers.find("const", 0) != std::string::npos;
     }
 
 }

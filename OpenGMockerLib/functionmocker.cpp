@@ -39,7 +39,7 @@ namespace OpenGMocker
         const auto virtualIndicator = function.substr(0, firstSpacePos);
         if (virtualIndicator != "virtual")
         {
-            throw std::exception("Function is not virtual");
+            throw FunctionMockerException("Function is not virtual");
         }
         firstSpacePos += 1;
         function = function.substr(firstSpacePos, function.size() - firstSpacePos);

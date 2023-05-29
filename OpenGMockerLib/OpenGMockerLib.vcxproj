@@ -155,6 +155,7 @@
     <ClInclude Include="ifilemocker.h" />
     <ClInclude Include="ifunctionmocker.h" />
     <ClInclude Include="functionmocker.h" />
+    <ClInclude Include="mockerexception.h" />
     <ClInclude Include="mockfilegenerator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

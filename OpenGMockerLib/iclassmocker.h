@@ -2,10 +2,13 @@
 #ifndef ICLASSMOCKER_H
 #define ICLASSMOCKER_H
 
+#include "mockerexception.h"
+
 #include <string>
 
 namespace OpenGMocker
 {
+    MOCKER_EXCEPTION(ClassMockerException)
 
     class IClassMocker
     {

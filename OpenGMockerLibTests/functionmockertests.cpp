@@ -46,7 +46,7 @@ namespace OpenGMocker
         constexpr auto Function = "int TestFunction() = 0;";
         FunctionMocker mocker;
 
-        EXPECT_THROW(mocker.MockFunction(Function), std::exception);
+        EXPECT_THROW(mocker.MockFunction(Function), FunctionMockerException);
     }
 
     TEST_F(FunctionMockerTests, GenerateMockFromFunctionPrimitiveReturnPrimitiveParams)

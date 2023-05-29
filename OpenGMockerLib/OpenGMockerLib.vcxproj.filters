@@ -36,6 +36,9 @@
     <ClInclude Include="mockfilegenerator.h">
       <Filter>File Generation</Filter>
     </ClInclude>
+    <ClInclude Include="mockerexception.h">
+      <Filter>Mock Generation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mock Generation">

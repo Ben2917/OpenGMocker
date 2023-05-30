@@ -116,8 +116,7 @@ namespace OpenGMocker
         if ((namespacePos = fileContent.find("namespace")) != std::string::npos)
         {
             namespacePos += std::string("namespace").size() + 1;
-            // We have a namespace, save its name so the mock can be added to it
-
+            
             const auto openingBracePos = fileContent.find_first_of('{');
             auto namespaceName = fileContent.substr(namespacePos, openingBracePos - namespacePos);
             namespaceName.erase(std::remove_if(namespaceName.begin(), namespaceName.end(), [](char c) { return c == '\n'; }), namespaceName.end());
@@ -137,6 +136,14 @@ namespace OpenGMocker
             {
                 return classMocker->MockClass(fileContent.substr(classPos, classSemicolonPos + 2 - classPos));
             }
+            else
+            {
+                throw FileMockerException("Failed to find ';' at the end of class");
+            }
+        }
+        else
+        {
+            throw FileMockerException("Failed to find 'class' in file");
         }
         return {};
     }

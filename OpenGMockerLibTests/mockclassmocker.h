@@ -12,6 +12,7 @@ namespace OpenGMocker
     {
     public:
         MOCK_METHOD(std::string, MockClass, (const std::string& class_), (override));
+        MOCK_METHOD(std::string, GetClassName, (), (const, override));
     };
 }
 

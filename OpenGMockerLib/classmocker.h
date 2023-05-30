@@ -17,6 +17,7 @@ namespace OpenGMocker
         virtual ~ClassMocker() = default;
 
         std::string MockClass(const std::string& class_) override;
+        std::string GetClassName() const override;
 
     private:
         std::string GetInterfaceName();
@@ -25,6 +26,7 @@ namespace OpenGMocker
 
         std::unique_ptr<IFunctionMocker> functionMocker;
         std::string classStr;
+        std::string className;
     };
 }
 #endif // CLASSMOCKER_H

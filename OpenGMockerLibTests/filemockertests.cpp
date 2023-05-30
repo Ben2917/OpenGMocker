@@ -33,13 +33,13 @@ namespace OpenGMocker
             "\tvirtual ~ITestClass() = default;\n"
             "\n"
             "\tvirtual void TestFunction() = 0;\n"
-            "}\n";
+            "};\n";
 
         constexpr auto classOutput =
             "class MockITestClass : public ITestClass\n"
             "{\n"
             "\tMOCK_METHOD(void, TestFunction, (), (override));\n"
-            "}\n";
+            "};\n";
 
         constexpr auto input = 
             "#ifndef TESTCLASS_H\n"
@@ -51,7 +51,7 @@ namespace OpenGMocker
             "\tvirtual ~ITestClass() = default;\n"
             "\n"
             "\tvirtual void TestFunction() = 0;\n"
-            "}\n"
+            "};\n"
             "}\n"
             "#endif // TESTCLASS_H";
 
@@ -67,7 +67,7 @@ namespace OpenGMocker
             "class MockITestClass : public ITestClass\n"
             "{\n"
             "\tMOCK_METHOD(void, TestFunction, (), (override));\n"
-            "}\n"
+            "};\n"
             "}\n"
             "\n"
             "#endif // MOCKITESTCLASS_H";
@@ -75,6 +75,9 @@ namespace OpenGMocker
         EXPECT_CALL(*mockClassMocker, MockClass(classInput))
             .Times(1)
             .WillOnce(::testing::Return(classOutput));
+        EXPECT_CALL(*mockClassMocker, GetClassName())
+            .Times(1)
+            .WillOnce(::testing::Return("ITestClass"));
         FileMocker::Settings settings;
         FileMocker mocker(std::move(mockClassMocker), settings);
 

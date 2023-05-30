@@ -28,7 +28,13 @@ namespace OpenGMocker
             mockClassStream << "\t" << functionMocker->MockFunction(function) << "\n";
         }
         mockClassStream << "};";
+        className = name;
         return mockClassStream.str();
+    }
+
+    std::string ClassMocker::GetClassName() const
+    {
+        return className;
     }
     
     std::string ClassMocker::GetInterfaceName()

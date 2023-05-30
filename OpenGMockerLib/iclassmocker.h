@@ -16,6 +16,7 @@ namespace OpenGMocker
         virtual ~IClassMocker() = default;
 
         virtual std::string MockClass(const std::string& class_) = 0;
+        virtual std::string GetClassName() const = 0;
     };
 
 }

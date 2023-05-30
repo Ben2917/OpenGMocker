@@ -25,48 +25,72 @@ namespace OpenGMocker
             size_t namespacePos = std::string::npos;
             if ((namespacePos = fileContent.find("namespace")) != std::string::npos)
             {
+                namespacePos += std::string("namespace").size() + 1;
                 // We have a namespace, save its name so the mock can be added to it
 
                 const auto openingBracePos = fileContent.find_first_of('{');
-                const auto namespaceName = fileContent.substr(namespacePos, openingBracePos - namespacePos);
-                fileContent = fileContent.substr(openingBracePos + 1, fileContent.size() - (openingBracePos + 1));
+                auto namespaceName = fileContent.substr(namespacePos, openingBracePos - namespacePos);
+                namespaceName.erase(std::remove_if(namespaceName.begin(), namespaceName.end(), [](char c) { return c == '\n'; }), namespaceName.end());
+
+                const auto closingBracePos = fileContent.find_last_of('}');
+                fileContent = fileContent.substr(openingBracePos + 1, closingBracePos - (openingBracePos + 1));
                 return namespaceName;
             }
             return {};
         }();
 
         // Rip out the class regardless of namespace
-        size_t classPos = std::string::npos;
-        if ((classPos = fileContent.find("class")) != std::string::npos)
+        const auto mockedClass = [this]() -> std::string
         {
+            if (const auto classPos = fileContent.find("class"); classPos != std::string::npos)
+            {
+                return classMocker->MockClass(fileContent.substr(classPos, fileContent.size() - classPos));
+            }
+            return {};
+        }();
 
-        }
-
-        std::string mockClassName;
+        auto upperClassName = classMocker->GetClassName();
         std::for_each(
-            mockClassName.begin(), 
-            mockClassName.end(), 
+            upperClassName.begin(), 
+            upperClassName.end(), 
             [] (char& c) 
             { 
                 c = std::toupper(c); 
+            });
+        auto lowerClassName = upperClassName;
+        std::for_each(
+            lowerClassName.begin(),
+            lowerClassName.end(),
+            [](char& c)
+            {
+                c = std::tolower(c);
             });
 
         std::stringstream mockFileStream;
         if (settings.useCompatiblityGuards)
         {
             mockFileStream
-                << "#ifndef " << mockClassName << "_H\n"
-                << "#define " << mockClassName << "_H\n";
+                << "#ifndef MOCK" << upperClassName << "_H\n"
+                << "#define MOCK" << upperClassName << "_H\n";
         }
         else
         {
             mockFileStream << "#pragma once\n";
         }
 
+        mockFileStream << "\n"
+            << "#include \"" << lowerClassName << ".h\"\n"
+            << "#include <gmock/gmock.h>\n"
+            << "\n"
+            << "namespace " << namespaceName << "\n"
+            << "{\n"
+            << mockedClass
+            << "}\n"
+            << "\n";
 
         if (settings.useCompatiblityGuards)
         {
-            mockFileStream << "#endif //" << mockClassName;
+            mockFileStream << "#endif // MOCK" << upperClassName << "_H";
         }
         return mockFileStream.str();
     }

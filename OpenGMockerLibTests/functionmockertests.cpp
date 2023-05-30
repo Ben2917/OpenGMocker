@@ -85,4 +85,20 @@ namespace OpenGMocker
         EXPECT_EQ(ExpectedMock, actualMock);
     }
 
+    TEST_F(FunctionMockerTests, ExpectThrowOnMalformedFunctions)
+    {
+        constexpr auto NoParenthesesInput = "virtual void TestFunction = 0;";
+        constexpr auto OnlyOpenParenthesesInput = "virtual void TestFunction( = 0;";
+        constexpr auto TotalNonsense = "TotalNonsense";
+        constexpr auto EmptyString = "";
+        constexpr auto NoReturnType = "virtual TestFunction()=0;";
+
+        FunctionMocker mocker;
+        EXPECT_THROW(mocker.MockFunction(NoParenthesesInput), FunctionMockerException);
+        EXPECT_THROW(mocker.MockFunction(OnlyOpenParenthesesInput), FunctionMockerException);
+        EXPECT_THROW(mocker.MockFunction(TotalNonsense), FunctionMockerException);
+        EXPECT_THROW(mocker.MockFunction(EmptyString), FunctionMockerException);
+        EXPECT_THROW(mocker.MockFunction(NoReturnType), FunctionMockerException);
+    }
+
 }

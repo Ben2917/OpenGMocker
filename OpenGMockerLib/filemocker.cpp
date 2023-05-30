@@ -2,6 +2,7 @@
 #include "filemocker.h"
 
 #include <algorithm>
+#include <fstream>
 #include <sstream>
 
 namespace OpenGMocker
@@ -14,6 +15,24 @@ namespace OpenGMocker
 
     void FileMocker::MockFile(const std::string& inputFilename, const std::string& outputFilename)
     {
+        std::stringstream inputFileBuffer;
+        std::ifstream inputFile(inputFilename);
+        if (!(inputFile.good() && inputFile.is_open()))
+        {
+            throw FileMockerException("Failed to open input file");
+        }
+
+        inputFileBuffer << inputFile.rdbuf();
+        const auto mockedFileContent = MockFileContent(inputFileBuffer.str());
+
+        std::ofstream outputFile(outputFilename);
+        if (!(outputFile.good() && outputFile.is_open()))
+        {
+            throw FileMockerException("Failed to open output file");
+        }
+        
+        outputFile.write(mockedFileContent.c_str(), mockedFileContent.size());
+        outputFile.close();
     }
 
     std::string FileMocker::MockFileContent(const std::string& fileContent_)

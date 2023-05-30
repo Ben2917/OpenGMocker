@@ -35,15 +35,10 @@ namespace OpenGMocker
 
     void FunctionMocker::GetVirtualEnd()
     {
-        if (auto firstSpacePos = function.find_first_of(' '); firstSpacePos != std::string::npos)
+        if (const auto virtualPos = function.find_first_of("virtual"); virtualPos != std::string::npos)
         {
-            const auto virtualIndicator = function.substr(0, firstSpacePos);
-            if (virtualIndicator != "virtual")
-            {
-                throw FunctionMockerException("Function is not virtual");
-            }
-            firstSpacePos += 1;
-            function = function.substr(firstSpacePos, function.size() - firstSpacePos);
+            const auto endOfVirtual = virtualPos + std::string("virtual").size() + 1;
+            function = function.substr(endOfVirtual, function.size() - endOfVirtual);
         }
         else
         {

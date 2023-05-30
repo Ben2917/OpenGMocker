@@ -27,7 +27,7 @@ namespace OpenGMocker
         {
             mockClassStream << "\t" << functionMocker->MockFunction(function) << "\n";
         }
-        mockClassStream << "};";
+        mockClassStream << "};\n";
         className = name;
         return mockClassStream.str();
     }

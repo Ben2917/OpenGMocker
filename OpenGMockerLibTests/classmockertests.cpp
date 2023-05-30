@@ -34,7 +34,7 @@ namespace OpenGMocker
         constexpr auto expectedOutput =
             "class MockITestInterface : public ITestInterface\n"
             "{\n"
-            "};";
+            "};\n";
         ClassMocker mocker(std::move(mockFunctionMocker));
 
         std::string actualOutput;
@@ -54,7 +54,7 @@ namespace OpenGMocker
             "class MockITestInterface : public ITestInterface\n"
             "{\n"
             "\tMOCK_METHOD(void, TestFunction, (), (const, override));\n"
-            "};";
+            "};\n";
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(void, TestFunction, (), (const, override));"));

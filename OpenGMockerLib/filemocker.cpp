@@ -3,7 +3,33 @@
 
 #include <algorithm>
 #include <fstream>
+#include <ranges>
 #include <sstream>
+
+namespace
+{
+    std::string ToUpper(std::string str)
+    {
+        std::ranges::for_each(
+            str,
+            [](char& c)
+            {
+                c = std::toupper(c);
+            });
+        return str;
+    }
+
+    std::string ToLower(std::string str)
+    {
+        std::ranges::for_each(
+            str,
+            [](char& c)
+            {
+                c = std::tolower(c);
+            });
+        return str;
+    }
+}
 
 namespace OpenGMocker
 {
@@ -38,53 +64,13 @@ namespace OpenGMocker
     std::string FileMocker::MockFileContent(const std::string& fileContent_)
     {
         fileContent = fileContent_;
-        // Check for namespace
-        const auto namespaceName = [this] () -> std::string
-        {
-            size_t namespacePos = std::string::npos;
-            if ((namespacePos = fileContent.find("namespace")) != std::string::npos)
-            {
-                namespacePos += std::string("namespace").size() + 1;
-                // We have a namespace, save its name so the mock can be added to it
+        
+        const auto namespaceName = ParseNamespace();
+        const auto mockedClass = ParseAndMockClass();
 
-                const auto openingBracePos = fileContent.find_first_of('{');
-                auto namespaceName = fileContent.substr(namespacePos, openingBracePos - namespacePos);
-                namespaceName.erase(std::remove_if(namespaceName.begin(), namespaceName.end(), [](char c) { return c == '\n'; }), namespaceName.end());
-
-                const auto closingBracePos = fileContent.find_last_of('}');
-                fileContent = fileContent.substr(openingBracePos + 1, closingBracePos - (openingBracePos + 1));
-                return namespaceName;
-            }
-            return {};
-        }();
-
-        // Rip out the class regardless of namespace
-        const auto mockedClass = [this]() -> std::string
-        {
-            if (const auto classPos = fileContent.find("class"); classPos != std::string::npos)
-            {
-                return classMocker->MockClass(fileContent.substr(classPos, fileContent.size() - classPos));
-            }
-            return {};
-        }();
-
-        auto upperClassName = classMocker->GetClassName();
-        std::for_each(
-            upperClassName.begin(), 
-            upperClassName.end(), 
-            [] (char& c) 
-            { 
-                c = std::toupper(c); 
-            });
-        auto lowerClassName = upperClassName;
-        std::for_each(
-            lowerClassName.begin(),
-            lowerClassName.end(),
-            [](char& c)
-            {
-                c = std::tolower(c);
-            });
-
+        const auto upperClassName = ToUpper(classMocker->GetClassName());
+        const auto lowerClassName = ToLower(upperClassName);
+        
         std::stringstream mockFileStream;
         if (settings.useCompatiblityGuards)
         {
@@ -100,17 +86,58 @@ namespace OpenGMocker
         mockFileStream << "\n"
             << "#include \"" << lowerClassName << ".h\"\n"
             << "#include <gmock/gmock.h>\n"
-            << "\n"
-            << "namespace " << namespaceName << "\n"
-            << "{\n"
-            << mockedClass
-            << "}\n"
             << "\n";
+
+        if (namespaceName)
+        {
+            mockFileStream << "namespace " << *namespaceName << "\n"
+                << "{\n";
+        }
+
+        mockFileStream << mockedClass;
+
+        if (namespaceName)
+        {
+            mockFileStream << "}\n";
+        }
+
+        mockFileStream << "\n";
 
         if (settings.useCompatiblityGuards)
         {
             mockFileStream << "#endif // MOCK" << upperClassName << "_H";
         }
         return mockFileStream.str();
+    }
+
+    std::optional<std::string> FileMocker::ParseNamespace()
+    {
+        size_t namespacePos = std::string::npos;
+        if ((namespacePos = fileContent.find("namespace")) != std::string::npos)
+        {
+            namespacePos += std::string("namespace").size() + 1;
+            // We have a namespace, save its name so the mock can be added to it
+
+            const auto openingBracePos = fileContent.find_first_of('{');
+            auto namespaceName = fileContent.substr(namespacePos, openingBracePos - namespacePos);
+            namespaceName.erase(std::remove_if(namespaceName.begin(), namespaceName.end(), [](char c) { return c == '\n'; }), namespaceName.end());
+
+            const auto closingBracePos = fileContent.find_last_of('}');
+            fileContent = fileContent.substr(openingBracePos + 1, closingBracePos - (openingBracePos + 1));
+            return namespaceName;
+        }
+        return {};
+    }
+
+    std::string FileMocker::ParseAndMockClass()
+    {
+        if (const auto classPos = fileContent.find("class"); classPos != std::string::npos)
+        {
+            if (const auto classSemicolonPos = fileContent.find_last_of(";"); classSemicolonPos != std::string::npos)
+            {
+                return classMocker->MockClass(fileContent.substr(classPos, classSemicolonPos + 2 - classPos));
+            }
+        }
+        return {};
     }
 }

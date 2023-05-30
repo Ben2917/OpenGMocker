@@ -6,6 +6,7 @@
 #include "iclassmocker.h"
 
 #include <memory>
+#include <optional>
 
 namespace OpenGMocker
 {
@@ -23,6 +24,10 @@ namespace OpenGMocker
         std::string MockFileContent(const std::string& fileContent_);
 
     private:
+        std::optional<std::string> ParseNamespace();
+        std::string ParseAndMockClass();
+
+
         std::unique_ptr<IClassMocker> classMocker;
         Settings settings;
         std::string fileContent;

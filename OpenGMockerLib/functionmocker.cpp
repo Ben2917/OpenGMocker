@@ -35,7 +35,7 @@ namespace OpenGMocker
 
     void FunctionMocker::GetVirtualEnd()
     {
-        if (const auto virtualPos = function.find_first_of("virtual"); virtualPos != std::string::npos)
+        if (const auto virtualPos = function.find("virtual"); virtualPos != std::string::npos)
         {
             const auto endOfVirtual = virtualPos + std::string("virtual").size() + 1;
             function = function.substr(endOfVirtual, function.size() - endOfVirtual);
@@ -48,9 +48,7 @@ namespace OpenGMocker
 
     std::string FunctionMocker::GetReturnType()
     {
-        if (const auto secondSpacePos = function
-            .substr(0, function.size())
-            .find_first_of(' '); 
+        if (const auto secondSpacePos = function.find_first_of(' '); 
             secondSpacePos != std::string::npos)
         {
             const auto functionNameStart = secondSpacePos + 1;

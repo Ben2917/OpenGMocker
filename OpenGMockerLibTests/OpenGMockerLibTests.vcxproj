@@ -33,9 +33,6 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="classmockertests.cpp" />
     <ClCompile Include="filemockertests.cpp" />
     <ClCompile Include="functionmockertests.cpp" />
@@ -45,6 +42,9 @@
     <ClInclude Include="mockclassmocker.h" />
     <ClInclude Include="mockfilemocker.h" />
     <ClInclude Include="mockfunctionmocker.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

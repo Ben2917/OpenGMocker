@@ -112,4 +112,15 @@ namespace OpenGMocker
         ASSERT_EQ(expectedOutput, actualOutput);
     }
 
+    TEST_F(FunctionMockerTests, DealWithNoDiscardReturnValue)
+    {
+        constexpr auto input = "[[nodiscard]] virtual bool TestFunc(int arg) const = 0;";
+        constexpr auto expectedOutput = "MOCK_METHOD(bool, TestFunc, (int arg), (const, override));";
+
+        FunctionMocker mocker;
+        std::string actualOutput;
+        EXPECT_NO_THROW(actualOutput = mocker.MockFunction(input));
+        ASSERT_EQ(expectedOutput, actualOutput);
+    }
+
 }

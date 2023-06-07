@@ -22,7 +22,8 @@ namespace OpenGMocker
         std::stringstream mockClassStream;
         mockClassStream
             << "class Mock" << name << " : public " << name << "\n"
-            << "{\n";
+            << "{\n"
+            << "public:\n";
         for (const auto& function : functions)
         {
             mockClassStream << "\t" << functionMocker->MockFunction(function) << "\n";

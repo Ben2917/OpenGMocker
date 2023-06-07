@@ -70,6 +70,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -121,6 +129,16 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration);</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGMockerLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>cp $(SolutionDir)$(Platform)\$(Configuration)\OpenGMocker.exe $(SolutionDir)..\OpenGMockerExtension\bin\$(Configuration)\OpenGMocker.exe</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying OpenGMocker.exe to extension bin directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -141,6 +159,16 @@
       <AdditionalLibraryDirectories>$(SolutionDir)$(Platform)\$(Configuration);</AdditionalLibraryDirectories>
       <AdditionalDependencies>OpenGMockerLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>cp $(SolutionDir)$(Platform)\$(Configuration)\OpenGMocker.exe $(SolutionDir)..\OpenGMockerExtension\bin\$(Configuration)\OpenGMocker.exe</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>Copying OpenGMocker.exe to extension bin directory</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

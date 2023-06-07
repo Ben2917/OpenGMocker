@@ -29,11 +29,13 @@ namespace OpenGMocker
         constexpr auto input =
             "class ITestInterface\n"
             "{\n"
+            "public:\n"
             "\tvirtual ~ITestInterface() = default;\n"
             "};";
         constexpr auto expectedOutput =
             "class MockITestInterface : public ITestInterface\n"
             "{\n"
+            "public:\n"
             "};\n";
         ClassMocker mocker(std::move(mockFunctionMocker));
 
@@ -47,12 +49,14 @@ namespace OpenGMocker
         constexpr auto input =
             "class ITestInterface\n"
             "{\n"
+            "public:\n"
             "\tvirtual ~ITestInterface() = default;\n"
             "\tvirtual void TestFunction() const = 0;\n"
             "};";
         constexpr auto expectedOutput =
             "class MockITestInterface : public ITestInterface\n"
             "{\n"
+            "public:\n"
             "\tMOCK_METHOD(void, TestFunction, (), (const, override));\n"
             "};\n";
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))

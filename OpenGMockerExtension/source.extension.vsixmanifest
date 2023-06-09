@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="OpenGMockerExtension.5ae0a81e-e260-483d-92cd-e59cad59be05" Version="1.0" Language="en-US" Publisher="Ben Gooding" />
         <DisplayName>OpenGMockerExtension</DisplayName>
-        <Description xml:space="preserve">Allows the user to easily generate a gmock file from a selected interface fileAllows </Description>
+        <Description xml:space="preserve">Allows the user to easily generate a gmock file from a selected interface file</Description>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">

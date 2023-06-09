@@ -8,8 +8,13 @@ namespace OpenGMockerExtension
 {
     public partial class RunOpenGMockerDialogWindow : DialogWindow
     {
-        private bool inputFileSelected = false;
-        private bool outputFileSelected = false;
+        private const int OK                   = 0;
+        private const int INVALID_ARGS         = 1;
+        private const int FILE_MOCKER_ERR      = 2;
+        private const int CLASS_MOCKER_ERR     = 3;
+        private const int FUNCTION_MOCKER_ERR  = 4;
+        private const int UNKNOWN_ERR          = 5;
+
         public RunOpenGMockerDialogWindow()
         {
             InitializeComponent();
@@ -25,7 +30,6 @@ namespace OpenGMockerExtension
             if (inputFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 InputFileTextBox.Text = inputFileDialog.FileName;
-                inputFileSelected = true;
             }
         }
 
@@ -35,33 +39,56 @@ namespace OpenGMockerExtension
             if (outputFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 OutputFileTextBox.Text = outputFileDialog.FileName;
-                outputFileSelected = true;
             }
         }
 
         private void RunButtonClick(object sender, RoutedEventArgs e) 
         {
-            if (!inputFileSelected)
+            var confirmationResult = System.Windows.Forms.MessageBox.Show(
+                "Generating mock \"" + 
+                OutputFileTextBox.Text + 
+                "\" from \"" + 
+                InputFileTextBox.Text + 
+                "\". Proceed?");
+
+            if (confirmationResult.Equals(true))
             {
-                System.Windows.Forms.MessageBox.Show("Please select an interface file to generate a mock from");
-                return;
+                var process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                startInfo.FileName = "OpenGMocker.exe";
+                startInfo.Arguments = InputFileTextBox.Text + " " + OutputFileTextBox.Text;
+                process.StartInfo = startInfo;
+                process.Start();
+
+                while (!process.StandardOutput.EndOfStream)
+                {
+                    var mockerReturnCode = int.Parse(process.StandardOutput.ReadLine());
+                    switch (mockerReturnCode)
+                    {
+                        case OK:
+                            System.Windows.Forms.MessageBox.Show("Mock generated successfully.");
+                            break;
+                        case INVALID_ARGS:
+                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Invalid arguments.");
+                            break;
+                        case FILE_MOCKER_ERR:
+                            System.Windows.Forms.MessageBox.Show("Mock generation failed. File mocker error.");
+                            break;
+                        case CLASS_MOCKER_ERR:
+                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Class mocker error.");
+                            break;
+                        case FUNCTION_MOCKER_ERR:
+                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Function mocker error.");
+                            break;
+                        case UNKNOWN_ERR:
+                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Unknown error.");
+                            break;
+                    }
+                }
+
+                Close();
             }
-
-            if (!outputFileSelected)
-            {
-                System.Windows.Forms.MessageBox.Show("Please select an output file to save the generated mock to");
-                return;
-            }
-
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-            // startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-            startInfo.FileName = "OpenGMocker.exe";
-            startInfo.Arguments = InputFileTextBox.Text + " " + OutputFileTextBox.Text;
-            process.StartInfo = startInfo;
-            process.Start();
-
-            Close();
         }
 
         private void CancelButtonClick(object sender, RoutedEventArgs e) 

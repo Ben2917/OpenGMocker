@@ -51,40 +51,36 @@ namespace OpenGMockerExtension
                 InputFileTextBox.Text + 
                 "\". Proceed?");
 
-            if (confirmationResult.Equals(true))
+            if (confirmationResult == System.Windows.Forms.DialogResult.OK)
             {
                 var process = new System.Diagnostics.Process();
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                var startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                 startInfo.FileName = "OpenGMocker.exe";
                 startInfo.Arguments = InputFileTextBox.Text + " " + OutputFileTextBox.Text;
                 process.StartInfo = startInfo;
                 process.Start();
-
-                while (!process.StandardOutput.EndOfStream)
+                process.WaitForExit();
+                switch (process.ExitCode)
                 {
-                    var mockerReturnCode = int.Parse(process.StandardOutput.ReadLine());
-                    switch (mockerReturnCode)
-                    {
-                        case OK:
-                            System.Windows.Forms.MessageBox.Show("Mock generated successfully.");
-                            break;
-                        case INVALID_ARGS:
-                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Invalid arguments.");
-                            break;
-                        case FILE_MOCKER_ERR:
-                            System.Windows.Forms.MessageBox.Show("Mock generation failed. File mocker error.");
-                            break;
-                        case CLASS_MOCKER_ERR:
-                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Class mocker error.");
-                            break;
-                        case FUNCTION_MOCKER_ERR:
-                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Function mocker error.");
-                            break;
-                        case UNKNOWN_ERR:
-                            System.Windows.Forms.MessageBox.Show("Mock generation failed. Unknown error.");
-                            break;
-                    }
+                    case OK:
+                        System.Windows.Forms.MessageBox.Show("Mock generated successfully.");
+                        break;
+                    case INVALID_ARGS:
+                        System.Windows.Forms.MessageBox.Show("Mock generation failed. Invalid arguments.");
+                        break;
+                    case FILE_MOCKER_ERR:
+                        System.Windows.Forms.MessageBox.Show("Mock generation failed. File mocker error.");
+                        break;
+                    case CLASS_MOCKER_ERR:
+                        System.Windows.Forms.MessageBox.Show("Mock generation failed. Class mocker error.");
+                        break;
+                    case FUNCTION_MOCKER_ERR:
+                        System.Windows.Forms.MessageBox.Show("Mock generation failed. Function mocker error.");
+                        break;
+                    case UNKNOWN_ERR:
+                        System.Windows.Forms.MessageBox.Show("Mock generation failed. Unknown error.");
+                        break;
                 }
 
                 Close();

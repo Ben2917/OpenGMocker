@@ -134,7 +134,7 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>cp $(SolutionDir)$(Platform)\$(Configuration)\OpenGMocker.exe $(SolutionDir)..\OpenGMockerExtension\bin\$(Configuration)\OpenGMocker.exe</Command>
+      <Command>copy $(SolutionDir)$(Platform)\$(Configuration)\OpenGMocker.exe $(SolutionDir)..\OpenGMockerExtension\bin\$(Configuration)\OpenGMocker.exe</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying OpenGMocker.exe to extension bin directory</Message>
@@ -164,7 +164,7 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>cp $(SolutionDir)$(Platform)\$(Configuration)\OpenGMocker.exe $(SolutionDir)..\OpenGMockerExtension\bin\$(Configuration)\OpenGMocker.exe</Command>
+      <Command>copy $(SolutionDir)$(Platform)\$(Configuration)\OpenGMocker.exe $(SolutionDir)..\OpenGMockerExtension\bin\$(Configuration)\OpenGMocker.exe</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copying OpenGMocker.exe to extension bin directory</Message>

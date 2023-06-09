@@ -97,7 +97,6 @@
       <Project>{4C9DEE19-ED76-4F98-AC19-B2E5A9156176}</Project>
       <Name>OpenGMocker</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>VSIXContainerProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

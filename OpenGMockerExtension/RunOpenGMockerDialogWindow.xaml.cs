@@ -53,10 +53,13 @@ namespace OpenGMockerExtension
 
             if (confirmationResult == System.Windows.Forms.DialogResult.OK)
             {
+                string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                string exePath = path.Replace("OpenGMockerExtension.dll", "OpenGMocker.exe");
+                
                 var process = new System.Diagnostics.Process();
                 var startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                startInfo.FileName = "OpenGMocker.exe";
+                startInfo.FileName = exePath;
                 startInfo.Arguments = InputFileTextBox.Text + " " + OutputFileTextBox.Text;
                 process.StartInfo = startInfo;
                 process.Start();

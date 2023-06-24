@@ -35,6 +35,11 @@ namespace OpenGMocker
 
     std::string ClassMocker::GetClassName() const
     {
+        if (className.empty())
+        {
+            throw ClassMockerException("No class name found. Have you called \"MockClass\" first?");
+        }
+
         return className;
     }
     

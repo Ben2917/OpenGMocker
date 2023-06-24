@@ -44,7 +44,7 @@ namespace OpenGMocker
         ASSERT_EQ(expectedOutput, actualOutput);
     }
 
-    TEST_F(ClassMockerTests, MockInterfaceWithOneFunction)
+    TEST_F(ClassMockerTests, MockInterfaceWithOneFunctionTabIndentation)
     {
         constexpr auto input =
             "class ITestInterface\n"
@@ -68,6 +68,55 @@ namespace OpenGMocker
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));
         ASSERT_EQ(expectedOutput, actualOutput);
+    }
+
+    TEST_F(ClassMockerTests, MockInterfaceWithOneFunctionSpaceIndentation)
+    {
+        constexpr auto input =
+            "class ITestInterface\n"
+            "{\n"
+            "public:\n"
+            "    virtual ~ITestInterface() = default;\n"
+            "    virtual void TestFunction() const = 0;\n"
+            "};";
+        constexpr auto expectedOutput =
+            "class MockITestInterface : public ITestInterface\n"
+            "{\n"
+            "public:\n"
+            "\tMOCK_METHOD(void, TestFunction, (), (const, override));\n"
+            "};\n";
+        EXPECT_CALL(*mockFunctionMocker, MockFunction("    virtual void TestFunction() const = 0;"))
+            .Times(1)
+            .WillOnce(::testing::Return("MOCK_METHOD(void, TestFunction, (), (const, override));"));
+
+        ClassMocker mocker(std::move(mockFunctionMocker));
+
+        std::string actualOutput;
+        EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));
+        ASSERT_EQ(expectedOutput, actualOutput);
+    }
+
+    TEST_F(ClassMockerTests, CanGetClassName)
+    {
+        constexpr auto input =
+            "class ITestInterface\n"
+            "{\n"
+            "public:\n"
+            "\tvirtual ~ITestInterface() = default;\n"
+            "};";
+        constexpr auto expectedClassName = "ITestInterface";
+
+        ClassMocker mocker(std::move(mockFunctionMocker));
+
+        EXPECT_NO_THROW(mocker.MockClass(input));
+
+        ASSERT_EQ(mocker.GetClassName(), expectedClassName);
+    }
+
+    TEST_F(ClassMockerTests, ThrowsOnNoClassName)
+    {
+        ClassMocker mocker(std::move(mockFunctionMocker));
+        EXPECT_THROW(mocker.GetClassName(), ClassMockerException);
     }
 
 }

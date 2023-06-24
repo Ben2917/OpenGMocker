@@ -123,4 +123,15 @@ namespace OpenGMocker
         ASSERT_EQ(expectedOutput, actualOutput);
     }
 
+    TEST_F(FunctionMockerTests, GenerateMockFromFunctionWithLeadingWhitespace)
+    {
+        constexpr auto input = "    virtual void TestFunc() = 0;";
+        constexpr auto expectedOutput = "MOCK_METHOD(void, TestFunc, (), (override));";
+
+        FunctionMocker mocker;
+        std::string actualOutput;
+        EXPECT_NO_THROW(actualOutput = mocker.MockFunction(input));
+        ASSERT_EQ(expectedOutput, actualOutput);
+    }
+
 }

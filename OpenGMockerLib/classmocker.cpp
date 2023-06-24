@@ -63,18 +63,27 @@ namespace OpenGMocker
     
     std::string ClassMocker::GetStrippedFunctions()
     {
-        const auto closingBracePos = classStr.find_first_of('}');
-        std::string pureVirtualFunctions = classStr.substr(0, closingBracePos);
-        pureVirtualFunctions.erase(
-            std::remove_if(
-                pureVirtualFunctions.begin(),
-                pureVirtualFunctions.end(),
-                [](char c)
-                {
-                    return c == '\n' || c == '\t';
-                }),
-            pureVirtualFunctions.end());
+        std::string pureVirtualFunctions;
 
+        const auto closingBracePos = classStr.find_last_of('}');
+        std::string classBody = classStr.substr(0, closingBracePos);
+
+        // Extract functions
+        size_t functionStart = 0;
+        while ((functionStart = classBody.find("virtual")) != std::string::npos)
+        {
+            const auto functionEnd = [&classBody]
+            {
+                const auto end = classBody.find(";");
+                if (end == std::string::npos)
+                {
+                    throw ClassMockerException("Found start of function but not end");
+                }
+                return end + 1;
+            }();
+            pureVirtualFunctions += classBody.substr(functionStart, functionEnd - functionStart);
+            classBody = classBody.substr(functionEnd, classBody.size() - functionEnd);
+        }
         return pureVirtualFunctions;
     }
 

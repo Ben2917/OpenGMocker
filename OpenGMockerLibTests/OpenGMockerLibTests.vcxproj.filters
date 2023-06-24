@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Mock Generation Tests">
+      <UniqueIdentifier>{bd41bcb9-932d-4821-9c5e-b11e6b6cbae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mock Generation Mocks">
+      <UniqueIdentifier>{71a0a1a7-5a23-4baa-acbe-b4fbbee9e70c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="functionmockertests.cpp">
+      <Filter>Mock Generation Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="filemockertests.cpp">
+      <Filter>Mock Generation Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="classmockertests.cpp">
+      <Filter>Mock Generation Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mockfilemocker.h">
+      <Filter>Mock Generation Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="mockclassmocker.h">
+      <Filter>Mock Generation Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="mockfunctionmocker.h">
+      <Filter>Mock Generation Mocks</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

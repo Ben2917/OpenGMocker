@@ -4,9 +4,6 @@
     <Filter Include="Mock Generation Tests">
       <UniqueIdentifier>{bd41bcb9-932d-4821-9c5e-b11e6b6cbae9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="File Generation Tests">
-      <UniqueIdentifier>{7b4d843e-aedc-49ff-b836-da412ea47a77}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Mock Generation Mocks">
       <UniqueIdentifier>{71a0a1a7-5a23-4baa-acbe-b4fbbee9e70c}</UniqueIdentifier>
     </Filter>
@@ -20,9 +17,6 @@
     </ClCompile>
     <ClCompile Include="classmockertests.cpp">
       <Filter>Mock Generation Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="mockfilegeneratortests.cpp">
-      <Filter>File Generation Tests</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />

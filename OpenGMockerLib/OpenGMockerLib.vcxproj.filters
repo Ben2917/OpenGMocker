@@ -10,9 +10,6 @@
     <ClCompile Include="classmocker.cpp">
       <Filter>Mock Generation</Filter>
     </ClCompile>
-    <ClCompile Include="mockfilegenerator.cpp">
-      <Filter>File Generation</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="functionmocker.h">
@@ -33,9 +30,6 @@
     <ClInclude Include="classmocker.h">
       <Filter>Mock Generation</Filter>
     </ClInclude>
-    <ClInclude Include="mockfilegenerator.h">
-      <Filter>File Generation</Filter>
-    </ClInclude>
     <ClInclude Include="mockerexception.h">
       <Filter>Mock Generation</Filter>
     </ClInclude>
@@ -43,9 +37,6 @@
   <ItemGroup>
     <Filter Include="Mock Generation">
       <UniqueIdentifier>{c5158d01-495a-463d-b242-05028ad0171c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="File Generation">
-      <UniqueIdentifier>{998df927-6132-4481-9fba-1a906b6b8a42}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

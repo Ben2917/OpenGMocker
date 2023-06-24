@@ -36,7 +36,6 @@
     <ClCompile Include="classmockertests.cpp" />
     <ClCompile Include="filemockertests.cpp" />
     <ClCompile Include="functionmockertests.cpp" />
-    <ClCompile Include="mockfilegeneratortests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mockclassmocker.h" />

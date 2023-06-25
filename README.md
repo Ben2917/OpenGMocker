@@ -1,4 +1,7 @@
 # OpenGMocker
+## Status
+![Status](https://github.com/Ben2917/OpenGMocker/actions/workflows/buildandtest.yml/badge.svg)
+
 ## What is OpenGMocker?
 OpenGMocker is a tool for generating gmock files from C++ interfaces. It consists of two parts:
 * A simple command line tool - This is the core of OpenGMocker which can be used completely in isolation

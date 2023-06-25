@@ -10,7 +10,7 @@ OpenGMocker is a tool for generating gmock files from C++ interfaces. It consist
 It's currently a Windows-only tool, but the core tool could easily be built for other operating systems.
 
 ## How do I get it?
-See releases here. (TODO: Add a link to releases)
+See releases [here](https://github.com/Ben2917/OpenGMocker/releases).
 
 ## How do I use it?
 * Command line tool - Simply pass OpenGMocker an input file and an output file at the command line like so:

@@ -19,7 +19,7 @@ namespace OpenGMocker
             TABS
         };
 
-        ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, SpacesOrTabs spacesOrTabs_=SpacesOrTabs::TABS);
+        ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, SpacesOrTabs spacesOrTabs_=SpacesOrTabs::SPACES);
         virtual ~ClassMocker() = default;
 
         std::string MockClass(const std::string& class_) override;

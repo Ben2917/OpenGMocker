@@ -4,10 +4,29 @@
 #include <algorithm>
 #include <sstream>
 
+namespace
+{
+    const char* const GetTabConstant(OpenGMocker::ClassMocker::SpacesOrTabs spacesOrTabs)
+    {
+        using OpenGMocker::ClassMocker;
+
+        switch (spacesOrTabs)
+        {
+        case ClassMocker::SpacesOrTabs::SPACES:
+            return "    ";
+        case ClassMocker::SpacesOrTabs::TABS:
+            return "\t";
+        default:
+            throw std::runtime_error("SpacesOrTabs was an unexpected variant");
+        }
+    }
+}
+
 namespace OpenGMocker
 {
-    ClassMocker::ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_) :
-        functionMocker(std::move(functionMocker_))
+    ClassMocker::ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, SpacesOrTabs spacesOrTabs_) :
+        functionMocker(std::move(functionMocker_)),
+        spacesOrTabs(spacesOrTabs_)
     {
     }
 
@@ -16,8 +35,9 @@ namespace OpenGMocker
         classStr = class_;
 
         const auto name = GetInterfaceName();
-        const auto strippedFunctions = GetStrippedFunctions();
-        const auto functions = GetMockableFunctions(strippedFunctions);
+        const auto functions = GetStrippedFunctions();
+
+        const auto tabConstant = GetTabConstant(spacesOrTabs);
 
         std::stringstream mockClassStream;
         mockClassStream
@@ -26,7 +46,7 @@ namespace OpenGMocker
             << "public:\n";
         for (const auto& function : functions)
         {
-            mockClassStream << "\t" << functionMocker->MockFunction(function) << "\n";
+            mockClassStream << tabConstant << functionMocker->MockFunction(function) << "\n";
         }
         mockClassStream << "};\n";
         className = name;
@@ -61,9 +81,9 @@ namespace OpenGMocker
         return name;
     }
     
-    std::string ClassMocker::GetStrippedFunctions()
+    std::vector<std::string> ClassMocker::GetStrippedFunctions()
     {
-        std::string pureVirtualFunctions;
+        std::vector<std::string> pureVirtualFunctions;
 
         const auto closingBracePos = classStr.find_last_of('}');
         std::string classBody = classStr.substr(0, closingBracePos);
@@ -72,35 +92,24 @@ namespace OpenGMocker
         size_t functionStart = 0;
         while ((functionStart = classBody.find("virtual")) != std::string::npos)
         {
-            const auto functionEnd = [&classBody]
+            const auto functionEnd = [&classBody, functionStart]
             {
-                const auto end = classBody.find(";");
+                const auto end = classBody.find(";", functionStart);
                 if (end == std::string::npos)
                 {
                     throw ClassMockerException("Found start of function but not end");
                 }
                 return end + 1;
             }();
-            pureVirtualFunctions += classBody.substr(functionStart, functionEnd - functionStart);
+
+            const auto function = classBody.substr(functionStart, functionEnd - functionStart);
+            if (function.find('~') == std::string::npos)
+            {
+                pureVirtualFunctions.push_back(function);
+            }
+
             classBody = classBody.substr(functionEnd, classBody.size() - functionEnd);
         }
         return pureVirtualFunctions;
-    }
-
-    std::vector<std::string> ClassMocker::GetMockableFunctions(std::string strippedFunctions)
-    {
-        std::vector<std::string> functions;
-        size_t semicolonPos = 0;
-        while ((semicolonPos = strippedFunctions.find_first_of(';')) != std::string::npos)
-        {
-            semicolonPos += 1; // Inclusive of ';'
-            const auto function = strippedFunctions.substr(0, semicolonPos);
-            if (function.find('~') == std::string::npos)
-            {
-                functions.push_back(function);
-            }
-            strippedFunctions = strippedFunctions.substr(semicolonPos, strippedFunctions.size() - semicolonPos);
-        }
-        return functions;
     }
 }

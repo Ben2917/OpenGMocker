@@ -13,7 +13,13 @@ namespace OpenGMocker
     class ClassMocker : public IClassMocker
     {
     public:
-        ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_);
+        enum class SpacesOrTabs
+        {
+            SPACES,
+            TABS
+        };
+
+        ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, SpacesOrTabs spacesOrTabs_=SpacesOrTabs::SPACES);
         virtual ~ClassMocker() = default;
 
         std::string MockClass(const std::string& class_) override;
@@ -21,10 +27,11 @@ namespace OpenGMocker
 
     private:
         std::string GetInterfaceName();
-        std::string GetStrippedFunctions();
-        std::vector<std::string> GetMockableFunctions(std::string strippedFunctions);
+        std::vector<std::string> GetStrippedFunctions();
 
         std::unique_ptr<IFunctionMocker> functionMocker;
+        SpacesOrTabs spacesOrTabs;
+
         std::string classStr;
         std::string className;
     };

@@ -26,17 +26,17 @@ namespace OpenGMocker
 
     TEST_F(ClassMockerTests, MockInterfaceDetructorOnly)
     {
-        constexpr auto input =
-            "class ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "\tvirtual ~ITestInterface() = default;\n"
-            "};";
-        constexpr auto expectedOutput =
-            "class MockITestInterface : public ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "};\n";
+        constexpr auto input = R"(class ITestInterface
+{
+public:
+    virtual ~ITestInterface() = default;
+};)";
+
+        constexpr auto expectedOutput = R"(class MockITestInterface : public ITestInterface
+{
+public:
+};
+)";
         ClassMocker mocker(std::move(mockFunctionMocker));
 
         std::string actualOutput;
@@ -46,19 +46,19 @@ namespace OpenGMocker
 
     TEST_F(ClassMockerTests, MockInterfaceWithOneFunctionTabIndentation)
     {
-        constexpr auto input =
-            "class ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "\tvirtual ~ITestInterface() = default;\n"
-            "\tvirtual void TestFunction() const = 0;\n"
-            "};";
-        constexpr auto expectedOutput =
-            "class MockITestInterface : public ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "\tMOCK_METHOD(void, TestFunction, (), (const, override));\n"
-            "};\n";
+        constexpr auto input = R"(class ITestInterface
+{
+public:
+    virtual ~ITestInterface() = default;
+    virtual void TestFunction() const = 0;
+};)";
+
+        constexpr auto expectedOutput = R"(class MockITestInterface : public ITestInterface
+{
+public:
+    MOCK_METHOD(void, TestFunction, (), (const, override));
+};
+)";
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(void, TestFunction, (), (const, override));"));
@@ -72,19 +72,19 @@ namespace OpenGMocker
 
     TEST_F(ClassMockerTests, MockInterfaceWithOneFunctionSpaceIndentation)
     {
-        constexpr auto input =
-            "class ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "    virtual ~ITestInterface() = default;\n"
-            "    virtual void TestFunction() const = 0;\n"
-            "};";
-        constexpr auto expectedOutput =
-            "class MockITestInterface : public ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "\tMOCK_METHOD(void, TestFunction, (), (const, override));\n"
-            "};\n";
+        constexpr auto input = R"(class ITestInterface
+{
+public:
+    virtual ~ITestInterface() = default;
+    virtual void TestFunction() const = 0;
+};)";
+
+        constexpr auto expectedOutput = R"(class MockITestInterface : public ITestInterface
+{
+public:
+    MOCK_METHOD(void, TestFunction, (), (const, override));
+};
+)";
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(void, TestFunction, (), (const, override));"));
@@ -98,28 +98,27 @@ namespace OpenGMocker
 
     TEST_F(ClassMockerTests, MockInterfaceWithMoreThanFunctions)
     {
-        constexpr auto input =
-            "class ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "\n"
-            "\t// Enumeration to represent possible states\n"
-            "\tenum class State\n"
-            "\t{\n"
-            "\t\tOne,\n"
-            "\t\tTwo,\n"
-            "\t\tThree\n"
-            "\t}\n"
-            "\n"
-            "\tvirtual ~ITestInterface() = default;\n"
-            "\tvirtual void TestFunction() const = 0;\n"
-            "};";
-        constexpr auto expectedOutput =
-            "class MockITestInterface : public ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "\tMOCK_METHOD(void, TestFunction, (), (const, override));\n"
-            "};\n";
+        constexpr auto input = R"(class ITestInterface
+{
+public:
+    // Enumeration to represent possible states
+    enum class State
+    {
+        One,
+        Two,
+        Three
+    };
+
+    virtual ~ITestInterface() = default;
+    virtual void TestFunction() const = 0;
+"};)";
+
+        constexpr auto expectedOutput = R"(class MockITestInterface : public ITestInterface
+{
+public:
+    MOCK_METHOD(void, TestFunction, (), (const, override));
+};
+)";
 
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))
             .Times(1)
@@ -134,12 +133,12 @@ namespace OpenGMocker
 
     TEST_F(ClassMockerTests, CanGetClassName)
     {
-        constexpr auto input =
-            "class ITestInterface\n"
-            "{\n"
-            "public:\n"
-            "\tvirtual ~ITestInterface() = default;\n"
-            "};";
+        constexpr auto input = R"(class ITestInterface
+{
+public:
+    virtual ~ITestInterface() = default;
+};)";
+
         constexpr auto expectedClassName = "ITestInterface";
 
         ClassMocker mocker(std::move(mockFunctionMocker));
@@ -153,6 +152,72 @@ namespace OpenGMocker
     {
         ClassMocker mocker(std::move(mockFunctionMocker));
         EXPECT_THROW(mocker.GetClassName(), ClassMockerException);
+    }
+
+    TEST_F(ClassMockerTests, CanHandleBigClassWithFactoryFunctions)
+    {
+        constexpr auto input = R"(class ITestInterface
+{
+
+public:
+    virtual ~ITestInterface() = default;
+
+    static std::unique_ptr<ISomeInterface> Create(int i, double j, Item k);
+    static std::unique_ptr<ISomeInterface> CreateInADifferentWay(const std::string &z, Item k);
+
+    virtual int Getter() const = 0;
+    virtual void Setter(int val) = 0;
+
+    enum class State
+    {
+        GOOD,
+        BAD,
+        UGLY
+    }
+
+    virtual void Time() = 0;
+    virtual void To() = 0;
+    virtual void SayGoodbye() = 0;
+};)";
+
+        constexpr auto expectedOutput = R"(class MockITestInterface : public ITestInterface
+{
+public:
+    MOCK_METHOD(int, Getter, (), (const, override));
+    MOCK_METHOD(void, Setter, (int val), (override));
+    MOCK_METHOD(void, Time, (), (override));
+    MOCK_METHOD(void, To, (), (override));
+    MOCK_METHOD(void, SayGoodbye, (), (override));
+};
+)";
+
+        EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual int Getter() const = 0;"))
+            .Times(1)
+            .WillOnce(::testing::Return("MOCK_METHOD(int, Getter, (), (const, override));"));
+
+        EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void Setter(int val) = 0;"))
+            .Times(1)
+            .WillOnce(::testing::Return("MOCK_METHOD(void, Setter, (int val), (override));"));
+
+        EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void Time() = 0;"))
+            .Times(1)
+            .WillOnce(::testing::Return("MOCK_METHOD(void, Time, (), (override));"));
+
+        EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void To() = 0;"))
+            .Times(1)
+            .WillOnce(::testing::Return("MOCK_METHOD(void, To, (), (override));"));
+
+        EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void SayGoodbye() = 0;"))
+            .Times(1)
+            .WillOnce(::testing::Return("MOCK_METHOD(void, SayGoodbye, (), (override));"));
+
+        ClassMocker mocker(std::move(mockFunctionMocker));
+
+        std::string actualOutput;
+        EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));
+        ASSERT_EQ(expectedOutput, actualOutput);
+
+
     }
 
 }

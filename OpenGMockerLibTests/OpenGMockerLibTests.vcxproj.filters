@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="functionmockertests.cpp">
-      <Filter>Mock Generation Tests</Filter>
-    </ClCompile>
     <ClCompile Include="filemockertests.cpp">
       <Filter>Mock Generation Tests</Filter>
     </ClCompile>
@@ -28,6 +25,9 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
     <ClCompile Include="commandlineconfigtests.cpp">
       <Filter>Mock Generation Tests\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="functionmockertests.cpp">
+      <Filter>Mock Generation Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

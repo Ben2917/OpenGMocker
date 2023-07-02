@@ -1,5 +1,7 @@
 
 #include "filemocker.h"
+
+#include "commandlineconfig.h"
 #include "utilities.h"
 
 #include <algorithm>
@@ -9,9 +11,10 @@
 
 namespace OpenGMocker
 {
-    FileMocker::FileMocker(std::unique_ptr<IClassMocker> classMocker_, const Settings &settings_) :
+    FileMocker::FileMocker(std::unique_ptr<IClassMocker> classMocker_, 
+        const std::shared_ptr<ICommandLineConfig> &commandLineConfig_) :
         classMocker(std::move(classMocker_)),
-        settings(settings_)
+        commandLineConfig(commandLineConfig_)
     {
     }
 
@@ -46,9 +49,11 @@ namespace OpenGMocker
 
         const auto upperClassName = ToUpper(classMocker->GetClassName());
         const auto lowerClassName = ToLower(upperClassName);
+
+        const bool useCompatGuards = commandLineConfig->GetPragmaOrIfndef() == CommandLineConfig::PragmaOrIfndef::Ifndef;
         
         std::stringstream mockFileStream;
-        if (settings.useCompatiblityGuards)
+        if (useCompatGuards)
         {
             mockFileStream
                 << "#ifndef MOCK" << upperClassName << "_H\n"
@@ -79,7 +84,7 @@ namespace OpenGMocker
 
         mockFileStream << "\n";
 
-        if (settings.useCompatiblityGuards)
+        if (useCompatGuards)
         {
             mockFileStream << "#endif // MOCK" << upperClassName << "_H";
         }
@@ -95,7 +100,15 @@ namespace OpenGMocker
             
             const auto openingBracePos = fileContent.find_first_of('{');
             auto namespaceName = fileContent.substr(namespacePos, openingBracePos - namespacePos);
-            namespaceName.erase(std::remove_if(namespaceName.begin(), namespaceName.end(), [](char c) { return c == '\n'; }), namespaceName.end());
+            namespaceName.erase(
+                std::remove_if(
+                    namespaceName.begin(), 
+                    namespaceName.end(), 
+                    [](char c) 
+                    { 
+                        return c == '\n'; 
+                    }), 
+                    namespaceName.end());
 
             const auto closingBracePos = fileContent.find_last_of('}');
             fileContent = fileContent.substr(openingBracePos + 1, closingBracePos - (openingBracePos + 1));

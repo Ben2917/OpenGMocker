@@ -10,16 +10,13 @@
 
 namespace OpenGMocker
 {
+    class ICommandLineConfig;
+
     class ClassMocker : public IClassMocker
     {
     public:
-        enum class SpacesOrTabs
-        {
-            SPACES,
-            TABS
-        };
-
-        ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, SpacesOrTabs spacesOrTabs_=SpacesOrTabs::SPACES);
+        ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, 
+            const std::shared_ptr<ICommandLineConfig> &commandLineConfig_);
         virtual ~ClassMocker() = default;
 
         std::string MockClass(const std::string& class_) override;
@@ -30,7 +27,7 @@ namespace OpenGMocker
         std::vector<std::string> GetStrippedFunctions();
 
         std::unique_ptr<IFunctionMocker> functionMocker;
-        SpacesOrTabs spacesOrTabs;
+        std::shared_ptr<ICommandLineConfig> commandLineConfig;
 
         std::string classStr;
         std::string className;

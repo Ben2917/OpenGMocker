@@ -1,6 +1,7 @@
 
 #include "classmocker.h"
 
+#include "mockcommandlineconfig.h"
 #include "mockfunctionmocker.h"
 
 #include <gtest/gtest.h>
@@ -12,16 +13,31 @@ namespace OpenGMocker
     {
     protected:
         ClassMockerTests() :
-            mockFunctionMocker(std::make_unique<MockFunctionMocker>())
+            mockFunctionMocker(std::make_unique<MockFunctionMocker>()),
+            mockCommandLineConfig(std::make_shared<MockCommandLineConfig>())
         {
         }
 
+        void ExpectGetConfiguration()
+        {
+            EXPECT_CALL(*mockCommandLineConfig, GetTabsOrSpaces)
+                .Times(1)
+                .WillOnce(::testing::Return(ICommandLineConfig::TabsOrSpaces::Spaces));
+            EXPECT_CALL(*mockCommandLineConfig, GetTabSpaces)
+                .Times(1)
+                .WillOnce(::testing::Return(4));
+            EXPECT_CALL(*mockCommandLineConfig, GetOverriddenMockClassName)
+                .Times(1)
+                .WillOnce(::testing::Return(std::string()));
+        }
+
         std::unique_ptr<MockFunctionMocker> mockFunctionMocker;
+        std::shared_ptr<MockCommandLineConfig> mockCommandLineConfig;
     };
 
     TEST_F(ClassMockerTests, ConstructsWithoutThrowing)
     {
-        EXPECT_NO_THROW(ClassMocker mocker(std::move(mockFunctionMocker)));
+        EXPECT_NO_THROW(ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig));
     }
 
     TEST_F(ClassMockerTests, MockInterfaceDetructorOnly)
@@ -37,8 +53,9 @@ public:
 public:
 };
 )";
-        ClassMocker mocker(std::move(mockFunctionMocker));
+        ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig);
 
+        ExpectGetConfiguration();
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));
         ASSERT_EQ(expectedOutput, actualOutput);
@@ -59,11 +76,12 @@ public:
     MOCK_METHOD(void, TestFunction, (), (const, override));
 };
 )";
+        ExpectGetConfiguration();
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(void, TestFunction, (), (const, override));"));
 
-        ClassMocker mocker(std::move(mockFunctionMocker));
+        ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig);
 
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));
@@ -85,11 +103,12 @@ public:
     MOCK_METHOD(void, TestFunction, (), (const, override));
 };
 )";
+        ExpectGetConfiguration();
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(void, TestFunction, (), (const, override));"));
 
-        ClassMocker mocker(std::move(mockFunctionMocker));
+        ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig);
 
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));
@@ -119,12 +138,12 @@ public:
     MOCK_METHOD(void, TestFunction, (), (const, override));
 };
 )";
-
+        ExpectGetConfiguration();
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual void TestFunction() const = 0;"))
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(void, TestFunction, (), (const, override));"));
 
-        ClassMocker mocker(std::move(mockFunctionMocker));
+        ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig);
 
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));
@@ -141,8 +160,9 @@ public:
 
         constexpr auto expectedClassName = "ITestInterface";
 
-        ClassMocker mocker(std::move(mockFunctionMocker));
+        ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig);
 
+        ExpectGetConfiguration();
         EXPECT_NO_THROW(mocker.MockClass(input));
 
         ASSERT_EQ(mocker.GetClassName(), expectedClassName);
@@ -150,7 +170,7 @@ public:
 
     TEST_F(ClassMockerTests, ThrowsOnNoClassName)
     {
-        ClassMocker mocker(std::move(mockFunctionMocker));
+        ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig);
         EXPECT_THROW(mocker.GetClassName(), ClassMockerException);
     }
 
@@ -190,7 +210,7 @@ public:
     MOCK_METHOD(void, SayGoodbye, (), (override));
 };
 )";
-
+        ExpectGetConfiguration();
         EXPECT_CALL(*mockFunctionMocker, MockFunction("virtual int Getter() const = 0;"))
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(int, Getter, (), (const, override));"));
@@ -211,7 +231,7 @@ public:
             .Times(1)
             .WillOnce(::testing::Return("MOCK_METHOD(void, SayGoodbye, (), (override));"));
 
-        ClassMocker mocker(std::move(mockFunctionMocker));
+        ClassMocker mocker(std::move(mockFunctionMocker), mockCommandLineConfig);
 
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockClass(input));

@@ -45,10 +45,9 @@ int main(int argc, const char **argv)
         auto config = std::make_shared<OpenGMocker::CommandLineConfig>(argsVector);
 
         auto functionMocker = std::make_unique<OpenGMocker::FunctionMocker>();
-        auto classMocker = std::make_unique<OpenGMocker::ClassMocker>(std::move(functionMocker));
+        auto classMocker = std::make_unique<OpenGMocker::ClassMocker>(std::move(functionMocker), config);
 
-        OpenGMocker::FileMocker::Settings settings;
-        auto fileMocker = std::make_unique<OpenGMocker::FileMocker>(std::move(classMocker), settings);
+        auto fileMocker = std::make_unique<OpenGMocker::FileMocker>(std::move(classMocker), config);
 
         fileMocker->MockFile(argv[1], argv[2]);
 

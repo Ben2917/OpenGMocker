@@ -10,15 +10,13 @@
 
 namespace OpenGMocker
 {
+    class ICommandLineConfig;
+
     class FileMocker : public IFileMocker 
     {
     public:
-        struct Settings
-        {
-            bool useCompatiblityGuards = true;
-        };
-
-        FileMocker(std::unique_ptr<IClassMocker> classMocker_, const Settings &settings_);
+        FileMocker(std::unique_ptr<IClassMocker> classMocker_, 
+            const std::shared_ptr<ICommandLineConfig> &commandLineConfig_);
 
         void MockFile(const std::string& inputFilename, const std::string& outputFilename);
         std::string MockFileContent(const std::string& fileContent_);
@@ -29,7 +27,8 @@ namespace OpenGMocker
 
 
         std::unique_ptr<IClassMocker> classMocker;
-        Settings settings;
+        std::shared_ptr<ICommandLineConfig> commandLineConfig;
+
         std::string fileContent;
     };
 }

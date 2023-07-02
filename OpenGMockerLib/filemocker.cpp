@@ -1,35 +1,11 @@
 
 #include "filemocker.h"
+#include "utilities.h"
 
 #include <algorithm>
 #include <fstream>
 #include <ranges>
 #include <sstream>
-
-namespace
-{
-    std::string ToUpper(std::string str)
-    {
-        std::ranges::for_each(
-            str,
-            [](char& c)
-            {
-                c = std::toupper(c);
-            });
-        return str;
-    }
-
-    std::string ToLower(std::string str)
-    {
-        std::ranges::for_each(
-            str,
-            [](char& c)
-            {
-                c = std::tolower(c);
-            });
-        return str;
-    }
-}
 
 namespace OpenGMocker
 {

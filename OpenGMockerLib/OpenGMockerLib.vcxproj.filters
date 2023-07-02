@@ -10,6 +10,15 @@
     <ClCompile Include="classmocker.cpp">
       <Filter>Mock Generation</Filter>
     </ClCompile>
+    <ClCompile Include="icommandlineconfig.h">
+      <Filter>Mock Generation\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="commandlineconfig.cpp">
+      <Filter>Mock Generation\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="utilities.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="functionmocker.h">
@@ -33,10 +42,22 @@
     <ClInclude Include="mockerexception.h">
       <Filter>Mock Generation</Filter>
     </ClInclude>
+    <ClInclude Include="commandlineconfig.h">
+      <Filter>Mock Generation\Config</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Mock Generation">
       <UniqueIdentifier>{c5158d01-495a-463d-b242-05028ad0171c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mock Generation\Config">
+      <UniqueIdentifier>{50f5ac2f-4ed7-4d07-8627-adf6dc65699a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{e72db6f8-4322-445d-bba7-5e01dc791587}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

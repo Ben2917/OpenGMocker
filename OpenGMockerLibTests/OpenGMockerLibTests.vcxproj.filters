@@ -7,6 +7,12 @@
     <Filter Include="Mock Generation Mocks">
       <UniqueIdentifier>{71a0a1a7-5a23-4baa-acbe-b4fbbee9e70c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mock Generation Tests\Config">
+      <UniqueIdentifier>{6099d1d0-a51f-4f1e-92d7-1cc32267625d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mock Generation Mocks\Config">
+      <UniqueIdentifier>{54854fc8-9f44-4006-aac2-fa4d47c67077}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="functionmockertests.cpp">
@@ -20,6 +26,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gtest\gtest-all.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)..\..\lib\native\src\gmock\gmock-all.cc" />
+    <ClCompile Include="commandlineconfigtests.cpp">
+      <Filter>Mock Generation Tests\Config</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mockfilemocker.h">
@@ -30,6 +39,9 @@
     </ClInclude>
     <ClInclude Include="mockfunctionmocker.h">
       <Filter>Mock Generation Mocks</Filter>
+    </ClInclude>
+    <ClInclude Include="mockcommandlineconfig.h">
+      <Filter>Mock Generation Mocks\Config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

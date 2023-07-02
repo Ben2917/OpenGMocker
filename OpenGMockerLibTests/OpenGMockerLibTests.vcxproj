@@ -34,11 +34,13 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="classmockertests.cpp" />
+    <ClCompile Include="commandlineconfigtests.cpp" />
     <ClCompile Include="filemockertests.cpp" />
     <ClCompile Include="functionmockertests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mockclassmocker.h" />
+    <ClInclude Include="mockcommandlineconfig.h" />
     <ClInclude Include="mockfilemocker.h" />
     <ClInclude Include="mockfunctionmocker.h" />
   </ItemGroup>

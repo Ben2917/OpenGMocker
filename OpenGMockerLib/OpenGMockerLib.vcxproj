@@ -144,17 +144,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="classmocker.cpp" />
+    <ClCompile Include="commandlineconfig.cpp" />
     <ClCompile Include="filemocker.cpp" />
     <ClCompile Include="functionmocker.cpp" />
+    <ClCompile Include="icommandlineconfig.h" />
+    <ClCompile Include="utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classmocker.h" />
+    <ClInclude Include="commandlineconfig.h" />
     <ClInclude Include="filemocker.h" />
     <ClInclude Include="iclassmocker.h" />
     <ClInclude Include="ifilemocker.h" />
     <ClInclude Include="ifunctionmocker.h" />
     <ClInclude Include="functionmocker.h" />
     <ClInclude Include="mockerexception.h" />
+    <ClInclude Include="utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

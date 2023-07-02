@@ -42,6 +42,11 @@ namespace OpenGMockerExtension
             }
         }
 
+        private string WrapInQuotes(string input)
+        {
+            return "\"" + input + "\"";
+        }
+
         private void RunButtonClick(object sender, RoutedEventArgs e) 
         {
             var confirmationResult = System.Windows.Forms.MessageBox.Show(
@@ -60,7 +65,7 @@ namespace OpenGMockerExtension
                 var startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                 startInfo.FileName = exePath;
-                startInfo.Arguments = InputFileTextBox.Text + " " + OutputFileTextBox.Text;
+                startInfo.Arguments = WrapInQuotes(InputFileTextBox.Text) + " " + WrapInQuotes(OutputFileTextBox.Text);
                 process.StartInfo = startInfo;
                 process.Start();
                 process.WaitForExit();

@@ -13,7 +13,9 @@ namespace OpenGMockerExtension
         private const int FILE_MOCKER_ERR      = 2;
         private const int CLASS_MOCKER_ERR     = 3;
         private const int FUNCTION_MOCKER_ERR  = 4;
-        private const int UNKNOWN_ERR          = 5;
+        private const int INVALID_ARG_ERR      = 5;
+
+        private const int UNKNOWN_ERR          = 100;
 
         public RunOpenGMockerDialogWindow()
         {

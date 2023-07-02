@@ -4,6 +4,9 @@
 
 #include "icommandlineconfig.h"
 
+#include <functional>
+#include <optional>
+#include <unordered_map>
 #include <vector>
 
 namespace OpenGMocker
@@ -22,11 +25,12 @@ namespace OpenGMocker
     private:
         void ParseCommandLineArgs(const std::vector<std::string>& commandLineArgs);
 
-
         TabsOrSpaces tabsOrSpaces;
         int tabSpaces;
         std::string overriddenMockClassName;
         PragmaOrIfndef pragmaOrIfdef;
+
+        std::unordered_map<std::string, std::function<void(const std::optional<std::string>&)>> argParsers;
     };
 }
 

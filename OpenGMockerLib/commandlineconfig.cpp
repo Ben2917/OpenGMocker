@@ -31,6 +31,79 @@ namespace OpenGMocker
     CommandLineConfig::CommandLineConfig(const std::vector<std::string>& commandLineArgs) :
         CommandLineConfig()
     {
+        argParsers["-tabsorspaces"] = [this](const std::optional<std::string>& secondArg)
+        {
+            if (!secondArg)
+            {
+                throw std::invalid_argument("Did not receive second argument to indicate tab/space use");
+            }
+
+            if (ToLower(*secondArg) == "tabs")
+            {
+                tabsOrSpaces = TabsOrSpaces::Tabs;
+            }
+            else if (ToLower(*secondArg) == "spaces")
+            {
+                tabsOrSpaces = TabsOrSpaces::Spaces;
+            }
+            else
+            {
+                throw std::invalid_argument("Invalid second argument for tabs/spaces selection");
+            }
+        };
+
+        argParsers["-tabspacecount"] = [this](const std::optional<std::string>& secondArg)
+        {
+            if (!secondArg)
+            {
+                throw std::invalid_argument("Did not receive second argument to indicate tab space count");
+            }
+
+            if (std::stoi(*secondArg) == TwoSpaceTab)
+            {
+                tabSpaces = TwoSpaceTab;
+            }
+            else if (std::stoi(*secondArg) == FourSpaceTab)
+            {
+                tabSpaces = FourSpaceTab;
+            }
+            else
+            {
+                throw std::invalid_argument("Invalid second argument for tab space count");
+            }
+        };
+
+        argParsers["-classname"] = [this](const std::optional<std::string>& secondArg)
+        {
+            if (!secondArg)
+            {
+                throw std::invalid_argument("Did not receive second argument for overridden class name");
+            }
+
+            overriddenMockClassName = *secondArg;
+        };
+
+        argParsers["-pragmaorifndef"] = [this](const std::optional<std::string>& secondArg)
+        {
+            if (!secondArg)
+            {
+                throw std::invalid_argument("Did not receive second argument for pragma/ifndef");
+            }
+
+            if (ToLower(*secondArg) == "pragma")
+            {
+                pragmaOrIfdef = PragmaOrIfndef::Pragma;
+            }
+            else if (ToLower(*secondArg) == "ifndef")
+            {
+                pragmaOrIfdef = PragmaOrIfndef::Ifndef;
+            }
+            else
+            {
+                throw std::invalid_argument("Invalid second argument for pragma/ifndef");
+            }
+        };
+
         ParseCommandLineArgs(commandLineArgs);
     }
 
@@ -68,74 +141,9 @@ namespace OpenGMocker
                 return std::nullopt;
             }();
 
-            if (firstArg == "-tabsorspaces")
+            if (argParsers.contains(firstArg))
             {
-                if (!secondArg)
-                {
-                    throw std::invalid_argument("Did not receive second argument to indicate tab/space use");
-                }
-
-                if (ToLower(*secondArg) == "tabs")
-                {
-                    tabsOrSpaces = TabsOrSpaces::Tabs;
-                }
-                else if (ToLower(*secondArg) == "spaces")
-                {
-                    tabsOrSpaces = TabsOrSpaces::Spaces;
-                }
-                else
-                {
-                    throw std::invalid_argument("Invalid second argument for tabs/spaces selection");
-                }
-            }
-            else if (firstArg == "-tabspacecount")
-            {
-                if (!secondArg)
-                {
-                    throw std::invalid_argument("Did not receive second argument to indicate tab space count");
-                }
-
-                if (std::stoi(*secondArg) == TwoSpaceTab)
-                {
-                    tabSpaces = TwoSpaceTab;
-                }
-                else if (std::stoi(*secondArg) == FourSpaceTab)
-                {
-                    tabSpaces = FourSpaceTab;
-                }
-                else
-                {
-                    throw std::invalid_argument("Invalid second argument for tab space count");
-                }
-            }
-            else if (firstArg == "-classname")
-            {
-                if (!secondArg)
-                {
-                    throw std::invalid_argument("Did not receive second argument for overridden class name");
-                }
-
-                overriddenMockClassName = *secondArg;
-            }
-            else if (firstArg == "-pragmaorifndef")
-            {
-                if (!secondArg)
-                {
-                    throw std::invalid_argument("Did not receive second argument for pragma/ifndef");
-                }
-
-                if (ToLower(*secondArg) == "pragma")
-                {
-                    pragmaOrIfdef = PragmaOrIfndef::Pragma;
-                }
-                else if (ToLower(*secondArg) == "ifndef")
-                {
-                    pragmaOrIfdef = PragmaOrIfndef::Ifndef;
-                }
-                else
-                {
-                    throw std::invalid_argument("Invalid second argument for pragma/ifndef");
-                }
+                argParsers[firstArg](secondArg);
             }
             else
             {

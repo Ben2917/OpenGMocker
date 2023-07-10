@@ -1,32 +1,17 @@
 
 #include "classmocker.h"
 
+#include "commandlineconfig.h"
+
 #include <algorithm>
 #include <sstream>
 
-namespace
-{
-    const char* const GetTabConstant(OpenGMocker::ClassMocker::SpacesOrTabs spacesOrTabs)
-    {
-        using OpenGMocker::ClassMocker;
-
-        switch (spacesOrTabs)
-        {
-        case ClassMocker::SpacesOrTabs::SPACES:
-            return "    ";
-        case ClassMocker::SpacesOrTabs::TABS:
-            return "\t";
-        default:
-            throw std::runtime_error("SpacesOrTabs was an unexpected variant");
-        }
-    }
-}
-
 namespace OpenGMocker
 {
-    ClassMocker::ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, SpacesOrTabs spacesOrTabs_) :
+    ClassMocker::ClassMocker(std::unique_ptr<IFunctionMocker> functionMocker_, 
+        const std::shared_ptr<ICommandLineConfig> &commandLineConfig_) :
         functionMocker(std::move(functionMocker_)),
-        spacesOrTabs(spacesOrTabs_)
+        commandLineConfig(commandLineConfig_)
     {
     }
 
@@ -36,12 +21,13 @@ namespace OpenGMocker
 
         const auto name = GetInterfaceName();
         const auto functions = GetStrippedFunctions();
+        const auto tabConstant = GetTabConstant();
 
-        const auto tabConstant = GetTabConstant(spacesOrTabs);
+        const auto overriddenClassName = commandLineConfig->GetOverriddenMockClassName();
 
         std::stringstream mockClassStream;
         mockClassStream
-            << "class Mock" << name << " : public " << name << "\n"
+            << "class Mock" << (!overriddenClassName.empty() ? overriddenClassName : name) << " : public " << name << "\n"
             << "{\n"
             << "public:\n";
         for (const auto& function : functions)
@@ -111,5 +97,26 @@ namespace OpenGMocker
             classBody = classBody.substr(functionEnd, classBody.size() - functionEnd);
         }
         return pureVirtualFunctions;
+    }
+
+    std::string ClassMocker::GetTabConstant() const
+    {
+        switch (commandLineConfig->GetTabsOrSpaces())
+        {
+        case ICommandLineConfig::TabsOrSpaces::Tabs:
+            return "\t";
+        case ICommandLineConfig::TabsOrSpaces::Spaces:
+        {
+            const auto tabSpaceCount = commandLineConfig->GetTabSpaces();
+            std::string tabSpace;
+            for (int i = 0; i < tabSpaceCount; i++)
+            {
+                tabSpace += " ";
+            }
+            return tabSpace;
+        }
+        default:
+            throw std::runtime_error("Unknown tab or space option");
+        }
     }
 }

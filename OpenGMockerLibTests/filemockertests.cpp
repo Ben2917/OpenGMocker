@@ -2,6 +2,7 @@
 #include "filemocker.h"
 
 #include "mockclassmocker.h"
+#include "mockcommandlineconfig.h"
 
 #include <format>
 #include <gtest/gtest.h>
@@ -12,17 +13,18 @@ namespace OpenGMocker
     {
     protected:
         FileMockerTests() :
-            mockClassMocker(std::make_unique<MockClassMocker>())
+            mockClassMocker(std::make_unique<MockClassMocker>()),
+            mockCommandLineConfig(std::make_shared<MockCommandLineConfig>())
         {
         }
 
         std::unique_ptr<MockClassMocker> mockClassMocker;
+        std::shared_ptr<MockCommandLineConfig> mockCommandLineConfig;
     };
 
     TEST_F(FileMockerTests, ConstructsWithoutThrowing)
     {
-        FileMocker::Settings settings;
-        EXPECT_NO_THROW(FileMocker mocker(std::move(mockClassMocker), settings));
+        EXPECT_NO_THROW(FileMocker mocker(std::move(mockClassMocker), mockCommandLineConfig));
     }
 
     TEST_F(FileMockerTests, MockFileContentWithBasicClassInNamespace)
@@ -78,8 +80,12 @@ namespace OpenGMocker
         EXPECT_CALL(*mockClassMocker, GetClassName())
             .Times(1)
             .WillOnce(::testing::Return("ITestClass"));
-        FileMocker::Settings settings;
-        FileMocker mocker(std::move(mockClassMocker), settings);
+
+        EXPECT_CALL(*mockCommandLineConfig, GetPragmaOrIfndef)
+            .Times(1)
+            .WillOnce(::testing::Return(ICommandLineConfig::PragmaOrIfndef::Ifndef));
+
+        FileMocker mocker(std::move(mockClassMocker), mockCommandLineConfig);
 
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockFileContent(input));
@@ -135,8 +141,12 @@ namespace OpenGMocker
         EXPECT_CALL(*mockClassMocker, GetClassName())
             .Times(1)
             .WillOnce(::testing::Return("ITestClass"));
-        FileMocker::Settings settings;
-        FileMocker mocker(std::move(mockClassMocker), settings);
+
+        EXPECT_CALL(*mockCommandLineConfig, GetPragmaOrIfndef)
+            .Times(1)
+            .WillOnce(::testing::Return(ICommandLineConfig::PragmaOrIfndef::Ifndef));
+
+        FileMocker mocker(std::move(mockClassMocker), mockCommandLineConfig);
 
         std::string actualOutput;
         EXPECT_NO_THROW(actualOutput = mocker.MockFileContent(input));

@@ -21,27 +21,7 @@ namespace OpenGMocker
 
         const auto name = GetInterfaceName();
         const auto functions = GetStrippedFunctions();
-
-        const auto tabConstant = [this] () -> std::string
-        {
-            switch (commandLineConfig->GetTabsOrSpaces())
-            {
-            case ICommandLineConfig::TabsOrSpaces::Tabs:
-                return "\t";
-            case ICommandLineConfig::TabsOrSpaces::Spaces:
-            {
-                const auto tabSpaceCount = commandLineConfig->GetTabSpaces();
-                std::string tabSpace;
-                for (int i = 0; i < tabSpaceCount; i++)
-                {
-                    tabSpace += " ";
-                }
-                return tabSpace;
-            }
-            default:
-                throw std::runtime_error("Unknown tab or space option");
-            }
-        }();
+        const auto tabConstant = GetTabConstant();
 
         const auto overriddenClassName = commandLineConfig->GetOverriddenMockClassName();
 
@@ -117,5 +97,26 @@ namespace OpenGMocker
             classBody = classBody.substr(functionEnd, classBody.size() - functionEnd);
         }
         return pureVirtualFunctions;
+    }
+
+    std::string ClassMocker::GetTabConstant() const
+    {
+        switch (commandLineConfig->GetTabsOrSpaces())
+        {
+        case ICommandLineConfig::TabsOrSpaces::Tabs:
+            return "\t";
+        case ICommandLineConfig::TabsOrSpaces::Spaces:
+        {
+            const auto tabSpaceCount = commandLineConfig->GetTabSpaces();
+            std::string tabSpace;
+            for (int i = 0; i < tabSpaceCount; i++)
+            {
+                tabSpace += " ";
+            }
+            return tabSpace;
+        }
+        default:
+            throw std::runtime_error("Unknown tab or space option");
+        }
     }
 }

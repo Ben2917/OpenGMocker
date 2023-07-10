@@ -25,6 +25,7 @@ namespace OpenGMocker
     private:
         std::string GetInterfaceName();
         std::vector<std::string> GetStrippedFunctions();
+        std::string GetTabConstant() const;
 
         std::unique_ptr<IFunctionMocker> functionMocker;
         std::shared_ptr<ICommandLineConfig> commandLineConfig;

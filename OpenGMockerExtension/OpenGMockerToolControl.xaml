@@ -25,17 +25,17 @@
                     <ColumnDefinition Width="55*"/>
                 </Grid.ColumnDefinitions>
                 <Label Content="Header Guards:" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
-                <RadioButton Content="Pragma Header Guard" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Foreground="White" Grid.ColumnSpan="2" IsChecked="True"/>
-                <RadioButton Content="Compatibility Header Guards" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Foreground="White" Grid.ColumnSpan="2"/>
+                <RadioButton x:Name="PragmaRadioButton" Content="Pragma Header Guard" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Foreground="White" Grid.ColumnSpan="2" IsChecked="True"/>
+                <RadioButton x:Name="IfndefRadioButton" Content="Compatibility Header Guards" HorizontalAlignment="Left" Margin="10,51,0,0" VerticalAlignment="Top" Foreground="White" Grid.ColumnSpan="2"/>
             </Grid>
             <Grid HorizontalAlignment="Left" Height="92" VerticalAlignment="Top" Width="148" Margin="17,152,0,0">
                 <Label Content="Tabs or Spaces:" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
-                <RadioButton Content="Tabs" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" Margin="10,31,0,0" IsChecked="True"/>
-                <RadioButton Content="Spaces" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" Margin="10,51,0,0"/>
-                <TextBox HorizontalAlignment="Left" Height="21" TextWrapping="Wrap" Text="How many spaces?" VerticalAlignment="Top" Width="117" Margin="31,71,0,0"/>
+                <RadioButton x:Name="TabsRadioButton" Content="Tabs" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" Margin="10,31,0,0" IsChecked="True" Checked="TabsRadioButton_Checked"/>
+                <RadioButton x:Name="SpacesRadioButton" Content="Spaces" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" Margin="10,51,0,0" Checked="SpacesRadioButton_Checked"/>
+                <TextBox x:Name="HowManySpacesTextBox" HorizontalAlignment="Left" Height="21" TextWrapping="Wrap" VerticalAlignment="Top" Width="21" Margin="74,48,0,0"/>
             </Grid>
             <Label Content="Override Class Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" Margin="20,27,0,0"/>
-            <TextBox HorizontalAlignment="Left" Margin="48,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+            <TextBox x:Name="ClassNameTextBox" HorizontalAlignment="Left" Margin="48,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="162" MaxWidth="162"/>
         </Grid>
 
     </Grid>

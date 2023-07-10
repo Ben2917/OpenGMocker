@@ -26,6 +26,8 @@ namespace OpenGMockerExtension
         public OpenGMockerToolControl()
         {
             this.InitializeComponent();
+
+            HowManySpacesTextBox.Visibility = Visibility.Hidden;
         }
 
         private void SelectInputFileButtonClick(object sender, RoutedEventArgs e)
@@ -51,6 +53,35 @@ namespace OpenGMockerExtension
             return "\"" + input + "\"";
         }
 
+        private string TabsOrSpacesArg()
+        {
+            return "-tabsorspaces " + (TabsRadioButton.IsChecked ?? true ? "tabs" : "spaces");
+        }
+
+        private string TabCountArg()
+        {
+            if (SpacesRadioButton.IsChecked ?? true)
+            {
+                return "-tabspacecount " + HowManySpacesTextBox.Text.ToString();
+            }
+            return null;
+        }
+
+        private string ClassNameArg()
+        {
+            var className = ClassNameTextBox.Text.ToString();
+            if (className.Length > 0)
+            {
+                return "-classname " + className;
+            }
+            return null;
+        }
+
+        private string PragmaOrIfndefArg()
+        {
+            return "-pragmaorifndef " + (PragmaRadioButton.IsChecked ?? true ? "pragma" : "ifndef");
+        }
+
         private void RunButtonClick(object sender, RoutedEventArgs e)
         {
             var confirmationResult = System.Windows.Forms.MessageBox.Show(
@@ -69,7 +100,18 @@ namespace OpenGMockerExtension
                 var startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                 startInfo.FileName = exePath;
-                startInfo.Arguments = WrapInQuotes(InputFileTextBox.Text) + " " + WrapInQuotes(OutputFileTextBox.Text);
+
+                var tabCountArg = TabCountArg();
+                var classNameArg = ClassNameArg();
+
+                startInfo.Arguments = 
+                    WrapInQuotes(InputFileTextBox.Text) + " " + 
+                    WrapInQuotes(OutputFileTextBox.Text) + " " +
+                    TabsOrSpacesArg() + " " +
+                    (tabCountArg != null ? tabCountArg : "") + " " +
+                    (classNameArg != null ? classNameArg : "") + " " +
+                    PragmaOrIfndefArg();
+                
                 process.StartInfo = startInfo;
                 process.Start();
                 process.WaitForExit();
@@ -92,11 +134,30 @@ namespace OpenGMockerExtension
                     case FUNCTION_MOCKER_ERR:
                         System.Windows.Forms.MessageBox.Show("Mock generation failed. Function mocker error.");
                         break;
+                    case INVALID_ARG_ERR:
+                        System.Windows.Forms.MessageBox.Show("Mock generation failed. Invalid argument error.");
+                        break;
                     case UNKNOWN_ERR:
                         System.Windows.Forms.MessageBox.Show("Mock generation failed. Unknown error.");
                         break;
                 }
             }
         }
+        private void TabsRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (HowManySpacesTextBox != null)
+            {
+                HowManySpacesTextBox.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void SpacesRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            if (HowManySpacesTextBox != null)
+            {
+                HowManySpacesTextBox.Visibility = Visibility.Visible;
+            }
+        }
+
     }
 }

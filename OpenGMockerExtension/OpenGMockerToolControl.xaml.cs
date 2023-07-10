@@ -1,33 +1,36 @@
-﻿using Microsoft.VisualStudio.PlatformUI;
-using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace OpenGMockerExtension
 {
-    public partial class RunOpenGMockerDialogWindow : DialogWindow
+    /// <summary>
+    /// Interaction logic for OpenGMockerToolControl.
+    /// </summary>
+    public partial class OpenGMockerToolControl : System.Windows.Controls.UserControl
     {
-        private const int OK                   = 0;
-        private const int INVALID_ARGS         = 1;
-        private const int FILE_MOCKER_ERR      = 2;
-        private const int CLASS_MOCKER_ERR     = 3;
-        private const int FUNCTION_MOCKER_ERR  = 4;
-        private const int INVALID_ARG_ERR      = 5;
+        private const int OK = 0;
+        private const int INVALID_ARGS = 1;
+        private const int FILE_MOCKER_ERR = 2;
+        private const int CLASS_MOCKER_ERR = 3;
+        private const int FUNCTION_MOCKER_ERR = 4;
+        private const int INVALID_ARG_ERR = 5;
 
-        private const int UNKNOWN_ERR          = 100;
+        private const int UNKNOWN_ERR = 100;
 
-        public RunOpenGMockerDialogWindow()
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OpenGMockerToolControl"/> class.
+        /// </summary>
+        public OpenGMockerToolControl()
         {
-            InitializeComponent();
-            MinWidth = Width;
-            MinHeight = Height;
-            MaxWidth = Width;
-            MaxHeight = Height;
+            this.InitializeComponent();
         }
 
         private void SelectInputFileButtonClick(object sender, RoutedEventArgs e)
         {
+            // TODO: Replace input file dialog with drop down box of files currently open in the editor
             var inputFileDialog = new OpenFileDialog();
             if (inputFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -43,26 +46,25 @@ namespace OpenGMockerExtension
                 OutputFileTextBox.Text = outputFileDialog.FileName;
             }
         }
-
         private string WrapInQuotes(string input)
         {
             return "\"" + input + "\"";
         }
 
-        private void RunButtonClick(object sender, RoutedEventArgs e) 
+        private void RunButtonClick(object sender, RoutedEventArgs e)
         {
             var confirmationResult = System.Windows.Forms.MessageBox.Show(
-                "Generating mock \"" + 
-                OutputFileTextBox.Text + 
-                "\" from \"" + 
-                InputFileTextBox.Text + 
+                "Generating mock \"" +
+                OutputFileTextBox.Text +
+                "\" from \"" +
+                InputFileTextBox.Text +
                 "\". Proceed?");
 
             if (confirmationResult == System.Windows.Forms.DialogResult.OK)
             {
                 string path = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 string exePath = path.Replace("OpenGMockerExtension.dll", "OpenGMocker.exe");
-                
+
                 var process = new System.Diagnostics.Process();
                 var startInfo = new System.Diagnostics.ProcessStartInfo();
                 startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -71,6 +73,8 @@ namespace OpenGMockerExtension
                 process.StartInfo = startInfo;
                 process.Start();
                 process.WaitForExit();
+
+                // TODO: Replace message boxes with output box in the command window on the UI
                 switch (process.ExitCode)
                 {
                     case OK:
@@ -92,14 +96,7 @@ namespace OpenGMockerExtension
                         System.Windows.Forms.MessageBox.Show("Mock generation failed. Unknown error.");
                         break;
                 }
-
-                Close();
             }
-        }
-
-        private void CancelButtonClick(object sender, RoutedEventArgs e) 
-        {
-            Close();
         }
     }
 }

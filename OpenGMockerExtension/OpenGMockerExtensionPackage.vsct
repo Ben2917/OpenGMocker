@@ -53,11 +53,18 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
     
-      <Button guid="guidOpenGMockerExtensionPackageCmdSet" id="cmdidExecuteOpenGMocker" priority="0x0100" type="Button">
+      <!--<Button guid="guidOpenGMockerExtensionPackageCmdSet" id="cmdidExecuteOpenGMocker" priority="0x0100" type="Button">
         <Parent guid="guidOpenGMockerExtensionPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages3" id="bmpPic1" />
         <Strings>
           <ButtonText>Execute OpenGMocker...</ButtonText>
+        </Strings>
+      </Button>-->
+      <Button guid="guidOpenGMockerExtensionPackageCmdSet" id="cmdidOpenGMockerToolCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
+        <Icon guid="guidImages4" id="bmpPic1" />
+        <Strings>
+          <ButtonText>OpenGMockerTool</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -69,7 +76,8 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages3" href="Resources\ExecuteOpenGMocker.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <!--<Bitmap guid="guidImages3" href="Resources\ExecuteOpenGMocker.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />-->
+      <Bitmap guid="guidImages4" href="Resources\OpenGMockerToolCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
 
@@ -84,6 +92,7 @@
       <IDSymbol value="4129" name="cmdidRunOpenGMockerCommand" />
       <IDSymbol value="4130" name="cmdidRunOpenGMockerCommnad" />
       <IDSymbol value="4131" name="cmdidExecuteOpenGMocker" />
+      <IDSymbol value="4132" name="cmdidOpenGMockerToolCommand" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{ad6bf5e4-9aa2-4a75-b67f-07f7c4b7a1bb}">
@@ -114,6 +123,15 @@
     </GuidSymbol>
   
     <GuidSymbol value="{48a60ba1-36e1-4a49-80e8-e25bb9688cbc}" name="guidImages3">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{26ac4be8-b551-4c6a-9dac-e542f7f861bb}" name="guidImages4">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

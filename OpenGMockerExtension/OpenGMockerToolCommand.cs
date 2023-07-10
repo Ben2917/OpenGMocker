@@ -12,12 +12,12 @@ namespace OpenGMockerExtension
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class ExecuteOpenGMocker
+    internal sealed class OpenGMockerToolCommand
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4131;
+        public const int CommandId = 4132;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -30,12 +30,12 @@ namespace OpenGMockerExtension
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExecuteOpenGMocker"/> class.
+        /// Initializes a new instance of the <see cref="OpenGMockerToolCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private ExecuteOpenGMocker(AsyncPackage package, OleMenuCommandService commandService)
+        private OpenGMockerToolCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -48,7 +48,7 @@ namespace OpenGMockerExtension
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ExecuteOpenGMocker Instance
+        public static OpenGMockerToolCommand Instance
         {
             get;
             private set;
@@ -71,28 +71,34 @@ namespace OpenGMockerExtension
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in ExecuteOpenGMocker's constructor requires
+            // Switch to the main thread - the call to AddCommand in OpenGMockerToolCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new ExecuteOpenGMocker(package, commandService);
+            Instance = new OpenGMockerToolCommand(package, commandService);
         }
 
         /// <summary>
-        /// This function is the callback used to execute the command when the menu item is clicked.
-        /// See the constructor to see how the menu item is associated with this function using
-        /// OleMenuCommandService service and MenuCommand class.
+        /// Shows the tool window when the menu item is clicked.
         /// </summary>
-        /// <param name="sender">Event sender.</param>
-        /// <param name="e">Event args.</param>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event args.</param>
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
+            // Get the instance number 0 of this tool window. This window is single instance so this instance
+            // is actually the only one.
+            // The last flag is set to true so that if the tool window does not exists it will be created.
+            ToolWindowPane window = this.package.FindToolWindow(typeof(OpenGMockerTool), 0, true);
+            if ((null == window) || (null == window.Frame))
+            {
+                throw new NotSupportedException("Cannot create tool window");
+            }
 
-            RunOpenGMockerDialogWindow dialog = new RunOpenGMockerDialogWindow();
-            dialog.ShowModal();
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
     }
 }
